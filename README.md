@@ -1,11 +1,13 @@
 # yougi_groovy
 
-Download wildfly 8.2.0.Final
+download wildfly 8.2.0.Final
+
 http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip
 
 install mariadb
 
 download this
+
 http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.34/mysql-connector-java-5.1.34.jar
 
 ```shell
@@ -23,7 +25,6 @@ cd wildfly/bin
 
 open another terminal...
 
-
 ```shell
 cd wildfly/bin
 
@@ -34,22 +35,6 @@ cd wildfly/bin
 ./jboss-cli.sh --connect --command='data-source add --name=UgDS --jndi-name=java:/jdbc/UgDS --driver-name=mysql-connector-java-5.1.34.jar_com.mysql.jdbc.Driver_5_1
 --connection-url=jdbc:mysql://127.0.0.1:3306/ug --user-name=ug --password=ug'
 
-```
-
-if
-
-```shell
-{
-    "outcome" => "success",
-    "result" => [true]
-}
-```
-
-then ok.
-
-run more...
-
-```shell
 ./jboss-cli.sh --connect --command='/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=smtp-gmail:add(host=smtp.gmail.com,port=465)'
 
 ./jboss-cli.sh --connect --command='/subsystem=mail/mail-session=Ug:add(jndi-name=java:/mail/ug)'
@@ -68,7 +53,7 @@ echo 'admins=admin,leader,helper,member,partner
 
 ./jboss-cli.sh --connect --command='/subsystem=security/security-domain=Ug/authentication=classic:add(login-modules=[{code="Database",
 flag="required", module-options={dsJndiName="java:/jdbc/UgDS", principalsQuery=\"select password from authentication where username=?\", rolesQuery=\"select group_name, 'Roles' from user_group ug inner join authentication a on ug.user_id = a.user_account where a.username = ?\", hashAlgorithm="SHA-256", hashEncoding="BASE64",
-unauthenticatedIdentity="guest"}},{code="RoleMapping", flag="required", module-options={rolesProperties="file:/home/hf/dev/wildfly/standalone/configuration/app.properties", replaceRole="false"}}])'
+unauthenticatedIdentity="guest"}},{code="RoleMapping", flag="required", module-options={rolesProperties="file:/YOUR_PATH_TO_WILDFLY_HERE/standalone/configuration/app.properties", replaceRole="false"}}])'
 
 ```
 
