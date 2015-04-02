@@ -26,6 +26,7 @@ package org.yougi.util;
  *
  * @author Daniel Cunha - danielsoro@gmail.com
  */
+// move to groovy and use this: http://mrhaki.blogspot.com.br/2010/06/groovy-goodness-capitalize-strings.html
 public class StringUtils {
 
     private StringUtils() {}

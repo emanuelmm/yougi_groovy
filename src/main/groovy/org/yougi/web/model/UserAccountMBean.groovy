@@ -102,7 +102,7 @@ public class UserAccountMBean implements Serializable {
   List<UserSession> userSessions
   Map<String, Boolean> selectedCommunities
 
-  public Map<String, Boolean> getSelectedCommunities() {
+  Map<String, Boolean> getSelectedCommunities() {
     if(this.selectedCommunities == null) {
       this.selectedCommunities = new HashMap<>()
         this.existingCommunities = getExistingCommunities()
@@ -159,7 +159,7 @@ public class UserAccountMBean implements Serializable {
   }
   // End of privacy composite validation
 
-  public Boolean getNoAccount() {
+  Boolean getNoAccount() {
     return userAccountBean.thereIsNoAccount()
   }
 
@@ -233,7 +233,7 @@ public class UserAccountMBean implements Serializable {
       locationMBean.setSelectedProvince(null)
     }
 
-    if(this.userAccount.getCity() != null) {
+    if(userAccount.city) {
       locationMBean.setSelectedCity(this.userAccount.getCity().getId())
     } else {
       locationMBean.setSelectedCity(null)
@@ -249,7 +249,6 @@ public class UserAccountMBean implements Serializable {
   }
 
   String register() {
-    println 'hail !!!'
     boolean isFirstUser = userAccountBean.thereIsNoAccount()
 
     if(context.isValidationFailed()) {
@@ -422,21 +421,21 @@ public class UserAccountMBean implements Serializable {
    * @return the next step in the navigation logic.
    */
   String removeUserAccount() {
-    userAccountBean.remove(this.userAccount.getId())
+    userAccountBean.remove(userAccount.id)
     "users?faces-redirect=true"
   }
 
   List<Community> getExistingCommunities() {
-    if(this.existingCommunities == null) {
-      this.existingCommunities = communityBean.findAll()
+    if (!existingCommunities) {
+      existingCommunities = communityBean.findAll()
     }
-    this.existingCommunities
+    existingCommunities
   }
 
   Boolean getHasMultipleCommunities() {
-    if(hasMultipleCommunities == null) {
-      this.hasMultipleCommunities = communityBean.hasMultipleCommunities()
+    if (!hasMultipleCommunities) {
+      hasMultipleCommunities = communityBean.hasMultipleCommunities()
     }
-    this.hasMultipleCommunities
+    hasMultipleCommunities
   }
 }
