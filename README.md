@@ -49,13 +49,18 @@ echo 'admins=admin,leader,helper,member,partner
      helpers=helper,member
      partners=partner' > ../standalone/configuration/app.properties
 
-./jboss-cli.sh --connect --command='/subsystem=security/security-domain=Ug:add(cache-type="default")'
+```
 
-PLEASE ATTENTION TO THIS ONE: (PATH TO WILDFLY)
+download this
 
-./jboss-cli.sh --connect --command='/subsystem=security/security-domain=Ug/authentication=classic:add(login-modules=[{code="Database",
-flag="required", module-options={dsJndiName="java:/jdbc/UgDS", principalsQuery=\"select password from authentication where username=?\", rolesQuery=\"select group_name, 'Roles' from user_group ug inner join authentication a on ug.user_id = a.user_account where a.username = ?\", hashAlgorithm="SHA-256", hashEncoding="BASE64",
-unauthenticatedIdentity="guest"}},{code="RoleMapping", flag="required", module-options={rolesProperties="file:/YOUR_PATH_TO_WILDFLY_HERE/standalone/configuration/app.properties", replaceRole="false"}}])'
+https://raw.githubusercontent.com/yougi/yougi_groovy/master/sec.cli
+
+put inside widfly/bin directory and run
+
+
+```shell
+
+./jboss-cli.sh -c --file=sec.cli
 
 ```
 
