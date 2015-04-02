@@ -30,10 +30,11 @@ cd wildfly/bin
 
 ./jboss-cli.sh --connect --command='deploy ~/Downloads/mysql-connector-java-5.1.34.jar'
 
-./jboss-cli.sh --connect --command='/subsystem=datasources/data-source=UgDS:test-connection-in-pool'
-
-./jboss-cli.sh --connect --command='data-source add --name=UgDS --jndi-name=java:/jdbc/UgDS --driver-name=mysql-connector-java-5.1.34.jar_com.mysql.jdbc.Driver_5_1
+./jboss-cli.sh --connect --command='data-source add --name=UgDS --jndi-name=java:/jdbc/UgDS \
+--driver-name=mysql-connector-java-5.1.34.jar_com.mysql.jdbc.Driver_5_1 \
 --connection-url=jdbc:mysql://127.0.0.1:3306/ug --user-name=ug --password=ug'
+
+./jboss-cli.sh --connect --command='/subsystem=datasources/data-source=UgDS:test-connection-in-pool'
 
 ./jboss-cli.sh --connect --command='/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=smtp-gmail:add(host=smtp.gmail.com,port=465)'
 
