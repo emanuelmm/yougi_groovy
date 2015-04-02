@@ -103,24 +103,24 @@ public class UserAccountMBean implements Serializable {
   Map<String, Boolean> selectedCommunities
 
   Map<String, Boolean> getSelectedCommunities() {
-    if(this.selectedCommunities == null) {
-      this.selectedCommunities = new HashMap<>()
-        this.existingCommunities = getExistingCommunities()
+    if(selectedCommunities == null) {
+      selectedCommunities = new HashMap<>()
+      existingCommunities = getExistingCommunities()
 
-        for(Community community: this.existingCommunities) {
-          this.selectedCommunities.put(community.getId(), false)
-        }
+      for(Community c: existingCommunities) {
+        selectedCommunities.put(c.id, false)
+      }
     }
-    return selectedCommunities
+    selectedCommunities
   }
 
   // Beginning of mail validation
   void validateEmail(FacesContext context, UIComponent component, Object value) {
     this.validationEmail = (String) value
 
-      if(userAccountBean.existingAccount(this.validationEmail)) {
-        throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,ResourceBundleHelper.getMessage("errorCode0004"), null))
-      }
+    if(userAccountBean.existingAccount(this.validationEmail)) {
+      throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,ResourceBundleHelper.getMessage("errorCode0004"), null))
+    }
   }
 
   void validateEmailConfirmation(FacesContext context, UIComponent component, Object value) {
@@ -262,8 +262,8 @@ public class UserAccountMBean implements Serializable {
       authentication.setUsername(userAccount.getUnverifiedEmail())
       authentication.setPassword(this.password)
       newUserAccount = userAccountBean.register(userAccount, authentication)
-    } catch(Exception e) {
-      LOGGER.log(Level.INFO, e.getMessage(), e)
+    } catch(e) {
+      LOGGER.log(Level.INFO, e.message, e)
       context.addMessage(userId, new FacesMessage(e.getCause().getMessage()))
       return "registration"
     }
@@ -370,17 +370,17 @@ public class UserAccountMBean implements Serializable {
 
   String confirm() {
     try {
-      userAccountBean.confirmUser(userAccount.getConfirmationCode())
+      userAccountBean.confirmUser(userAccount.confirmationCode)
     } catch (IllegalArgumentException iae) {
-      LOGGER.log(Level.INFO, iae.getMessage(), iae)
-      context.addMessage(null, new FacesMessage(iae.getMessage()))
+      LOGGER.log(Level.INFO, iae.message, iae)
+      context.addMessage(null, new FacesMessage(iae.message))
       return "user"
     }
     "users?faces-redirect=true"
   }
 
   String checkUserAsVerified() {
-    userAccountBean.markUserAsVerified(this.userAccount)
+    userAccountBean.markUserAsVerified(userAccount)
     "user?faces-redirect=true"
   }
 
@@ -392,7 +392,7 @@ public class UserAccountMBean implements Serializable {
       request.logout()
       session.invalidate()
     } catch(ServletException se) {
-      LOGGER.log(Level.INFO, se.getMessage(), se)
+      LOGGER.log(Level.INFO, se.message, se)
     }
 
     "/index?faces-redirect=true"
