@@ -20,13 +20,25 @@
  * */
 package org.yougi.web.model
 
-import org.yougi.business.*
-import org.yougi.entity.*
+import org.yougi.annotation.ManagedProperty
+import org.yougi.annotation.UserName
+import org.yougi.business.AuthenticationBean
+import org.yougi.business.CommunityBean
+import org.yougi.business.CommunityMemberBean
+import org.yougi.business.MessageHistoryBean
+import org.yougi.business.UserAccountBean
+import org.yougi.business.UserSessionBean
+import org.yougi.entity.Authentication
+import org.yougi.entity.Community
+import org.yougi.entity.CommunityMember
+import org.yougi.entity.MessageHistory
+import org.yougi.entity.UserAccount
+import org.yougi.entity.UserSession
 import org.yougi.reference.DeactivationType
 import org.yougi.util.ResourceBundleHelper
 import org.yougi.util.StringUtils
-import org.yougi.annotation.ManagedProperty
-import org.yougi.annotation.UserName
+
+import groovy.transform.CompileStatic
 
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
@@ -40,22 +52,18 @@ import javax.inject.Named
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
-import java.io.Serializable
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
-import java.util.Map
 import java.util.logging.Level
 import java.util.logging.Logger
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
+@CompileStatic
 @Named
 @RequestScoped
-public class UserAccountMBean implements Serializable {
+class UserAccountMBean implements Serializable {
 
-  private static final Logger LOGGER = Logger.getLogger(UserAccountMBean.class.getSimpleName())
+  private static final Logger LOGGER = Logger.getLogger(UserAccountMBean.simpleName)
 
   @EJB
   UserAccountBean userAccountBean
@@ -72,10 +80,10 @@ public class UserAccountMBean implements Serializable {
   @Inject
   LocationMBean locationMBean
   @Inject
-  @ManagedProperty("#{param.id}")
+  @ManagedProperty('#{param.id}')
   String id
   @Inject
-  @ManagedProperty("#{param.letter}")
+  @ManagedProperty('#{param.letter}')
   String letter
   @Inject
   FacesContext context
@@ -104,57 +112,55 @@ public class UserAccountMBean implements Serializable {
 
   Map<String, Boolean> getSelectedCommunities() {
     if(selectedCommunities == null) {
-      selectedCommunities = new HashMap<>()
-      existingCommunities = getExistingCommunities()
+      selectedCommunities = [:]
 
-      for(Community c: existingCommunities) {
-        selectedCommunities.put(c.id, false)
-      }
+      existingCommunities = getExistingCommunities()
+      existingCommunities.each { Community c -> selectedCommunities[c.id] = false }
     }
     selectedCommunities
   }
 
   // Beginning of mail validation
-  void validateEmail(FacesContext context, UIComponent component, Object value) {
-    this.validationEmail = (String) value
+  void validateEmail(FacesContext context, UIComponent component, value) {
+    validationEmail = (String) value
 
-    if(userAccountBean.existingAccount(this.validationEmail)) {
-      throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,ResourceBundleHelper.getMessage("errorCode0004"), null))
+    if(userAccountBean.existingAccount(validationEmail)) {
+      throw newValidatorException('errorCode0004')
     }
   }
 
-  void validateEmailConfirmation(FacesContext context, UIComponent component, Object value) {
+  void validateEmailConfirmation(FacesContext context, UIComponent component, value) {
     String validationEmailConfirmation = (String) value
-      if(!validationEmailConfirmation.equals(this.validationEmail)) {
-        throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundleHelper.getMessage("errorCode0003"), null))
-      }
+    if(!validationEmailConfirmation.equals(validationEmail)) {
+      throw newValidatorException('errorCode0003')
+    }
   }
   // End of email validation
 
   // Beginning of password validation
-  void validatePassword(FacesContext context, UIComponent component, Object value) {
-    this.password = (String) value
+  void validatePassword(FacesContext context, UIComponent component, value) {
+    password = (String) value
   }
 
-  void validatePasswordConfirmation(FacesContext context, UIComponent component, Object value) {
-    this.passwordConfirmation = (String) value
-      if(!this.passwordConfirmation.equals(this.password)) {
-        throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundleHelper.getMessage("errorCode0005"), null))
-      }
+  void validatePasswordConfirmation(FacesContext context, UIComponent component, value) {
+    passwordConfirmation = (String) value
+    if(passwordConfirmation != password) {
+      throw newValidatorException('errorCode0005')
+    }
   }
   // End of password validation
 
   // Beginning of privacy composite validation
-  void validatePrivacyOption(FacesContext context, UIComponent component, Object value) {
-    if(!this.validationPrivacy) {
-      this.validationPrivacy = (Boolean) value
+  void validatePrivacyOption(FacesContext context, UIComponent component, value) {
+    if(!validationPrivacy) {
+      validationPrivacy = (Boolean) value
     }
   }
 
-  void validatePrivacy(FacesContext context, UIComponent component, Object value) {
-    if(!this.validationPrivacy) {
-      this.validationPrivacy = (Boolean) value
-        throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundleHelper.getMessage("errorCode0007"), null))
+  void validatePrivacy(FacesContext context, UIComponent component, value) {
+    if(!validationPrivacy) {
+      validationPrivacy = (Boolean) value
+      throw newValidatorException('errorCode0007')
     }
   }
   // End of privacy composite validation
@@ -164,27 +170,20 @@ public class UserAccountMBean implements Serializable {
   }
 
   boolean isConfirmed() {
-    if(StringUtils.isNullOrBlank(userAccount.getConfirmationCode())) {
-      return true
-    }
-    return false
+    StringUtils.isNullOrBlank(userAccount.confirmationCode)
   }
 
-  void validateUserId(FacesContext context, UIComponent toValidate, Object value) {
+  void validateUserId(FacesContext context, UIComponent toValidate, value) {
     String usrId = (String) value
-      if(-1 == usrId.indexOf('@')) {
-        throw new ValidatorException(new FacesMessage("Invalid email address."))
-      }
+    if(!usrId.contains('@')) {
+      throw new ValidatorException(new FacesMessage('Invalid email address.'))
+    }
   }
 
   String getUserAccountByEmail() {
-    List<UserAccount> uas = new ArrayList<>(1)
-      UserAccount ua = userAccountBean.findByEmail(this.email)
-      if (ua != null) {
-        uas.add(ua)
-      }
-    this.userAccounts = uas
-      return "users"
+    UserAccount ua = userAccountBean.findByEmail(email)
+    userAccounts = (List<UserAccount>)(ua ? [ua] : [])
+    return 'users'
   }
 
   List<UserAccount> getUnverifiedUserAccounts() {
@@ -210,162 +209,148 @@ public class UserAccountMBean implements Serializable {
 
   @PostConstruct
   void load() {
-    if(!StringUtils.isNullOrBlank(this.id)) {
-      this.userAccount = userAccountBean.find(this.id)
-      this.authentication = authenticationBean.findByUserAccount(this.userAccount)
-      this.historicMessages = messageHistoryBean.findByRecipient(this.userAccount)
-      this.userSessions = userSessionBean.findByUserAccount(this.userAccount)
-    } else if(this.username != null) {
-      this.userAccount = userAccountBean.findByUsername(this.username)
+    if(!StringUtils.isNullOrBlank(id)) {
+      userAccount = userAccountBean.find(id)
+      authentication = authenticationBean.findByUserAccount(userAccount)
+      historicMessages = messageHistoryBean.findByRecipient(userAccount)
+      userSessions = userSessionBean.findByUserAccount(userAccount)
+    } else if(username != null) {
+      userAccount = userAccountBean.findByUsername(username)
     } else {
-      this.userAccount = new UserAccount()
+      userAccount = new UserAccount()
     }
 
-    if(this.userAccount.getCountry() != null) {
-      locationMBean.setSelectedCountry(this.userAccount.getCountry().getAcronym())
-    } else {
-      locationMBean.setSelectedCountry(null)
+    locationMBean.selectedCountry = userAccount.country?.acronym
+    locationMBean.selectedProvince = userAccount.province?.id
+    locationMBean.selectedCity = userAccount.city?.id
+
+    if(userAccount.timeZone) {
+      locationMBean.selectedTimeZone = userAccount.timeZone
     }
 
-    if(this.userAccount.getProvince() != null) {
-      locationMBean.setSelectedProvince(this.userAccount.getProvince().getId())
-    } else {
-      locationMBean.setSelectedProvince(null)
-    }
-
-    if(userAccount.city) {
-      locationMBean.setSelectedCity(this.userAccount.getCity().getId())
-    } else {
-      locationMBean.setSelectedCity(null)
-    }
-
-    if(this.userAccount.getTimeZone() != null) {
-      locationMBean.setSelectedTimeZone(this.userAccount.getTimeZone())
-    }
-
-    if(!StringUtils.isNullOrBlank(this.letter)) {
-      this.userAccounts = userAccountBean.findAllStartingWith(this.letter)
+    if(!StringUtils.isNullOrBlank(letter)) {
+      userAccounts = userAccountBean.findAllStartingWith(letter)
     }
   }
 
   String register() {
     boolean isFirstUser = userAccountBean.thereIsNoAccount()
 
-    if(context.isValidationFailed()) {
-      return "registration"
+    if(context.validationFailed) {
+      return 'registration'
     }
 
-    Authentication authentication = new Authentication()
     final UserAccount newUserAccount
     try {
-      authentication.setUserAccount(this.userAccount)
-      authentication.setUsername(userAccount.getUnverifiedEmail())
-      authentication.setPassword(this.password)
+      Authentication authentication = new Authentication(
+        userAccount: userAccount,
+        username: userAccount.unverifiedEmail,
+        password: password)
       newUserAccount = userAccountBean.register(userAccount, authentication)
     } catch(e) {
       LOGGER.log(Level.INFO, e.message, e)
-      context.addMessage(userId, new FacesMessage(e.getCause().getMessage()))
-      return "registration"
+      context.addMessage(userId, new FacesMessage(e.cause.message))
+      return 'registration'
     }
 
     if(!hasMultipleCommunities) {
       Community community = communityBean.findMainCommunity()
-      if (community != null) {
+      if (community) {
         CommunityMember communityMember = new CommunityMember(community, newUserAccount)
         communityMemberBean.save(communityMember)
       }
     }
 
     if(isFirstUser) {
-      context.addMessage(userId, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage("infoSuccessfulRegistration"), ""))
-      return "login"
-    } else if(hasMultipleCommunities) {
-      return "registration_communities?id=" + userAccount.getId()
-    } else {
-      context.addMessage(userId, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage("infoRegistrationConfirmationRequest"), ""))
-      return "registration_confirmation"
+      addContextInfoMessage('infoSuccessfulRegistration')
+      return 'login'
     }
+
+    if(hasMultipleCommunities) {
+      return 'registration_communities?id=' + userAccount.id
+    }
+
+    addContextInfoMessage('infoRegistrationConfirmationRequest')
+    return 'registration_confirmation'
   }
 
   String registerToCommunities() {
-    Community community
-    CommunityMember communityMember
-    this.userAccount = userAccountBean.find(this.userAccount.getId())
+    userAccount = userAccountBean.find(userAccount.id)
 
-    for (Map.Entry<String, Boolean> entry : this.selectedCommunities.entrySet()) {
-      if(entry.getValue()) {
-        community = communityBean.find(entry.getKey())
-        communityMember = new CommunityMember(community, this.userAccount)
+    selectedCommunities.each { String key, Boolean value ->
+      if(value) {
+        Community community = communityBean.find(key)
+        CommunityMember communityMember = new CommunityMember(community, userAccount)
         communityMemberBean.save(communityMember)
       }
     }
 
-    context.addMessage(userId, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage("infoRegistrationConfirmationRequest"), ""))
-    "registration_confirmation"
+    addContextInfoMessage('infoRegistrationConfirmationRequest')
+    'registration_confirmation'
   }
 
   String save() {
-    UserAccount existingUserAccount = userAccountBean.find(userAccount.getId())
+    UserAccount existingUserAccount = userAccountBean.find(userAccount.id)
 
-    if(existingUserAccount != null) {
-      existingUserAccount.setCountry(this.locationMBean.getCountry())
-      existingUserAccount.setProvince(this.locationMBean.getProvince())
-      existingUserAccount.setCity(this.locationMBean.getCity())
-      existingUserAccount.setFirstName(userAccount.getFirstName())
-      existingUserAccount.setLastName(userAccount.getLastName())
-      existingUserAccount.setGender(userAccount.getGender())
-      existingUserAccount.setWebsite(userAccount.getWebsite())
-      existingUserAccount.setTwitter(userAccount.getTwitter())
+    if(existingUserAccount) {
+      existingUserAccount.country = locationMBean.country
+      existingUserAccount.province = locationMBean.province
+      existingUserAccount.city = locationMBean.city
+      existingUserAccount.firstName = userAccount.firstName
+      existingUserAccount.lastName = userAccount.lastName
+      existingUserAccount.gender = userAccount.gender
+      existingUserAccount.website = userAccount.website
+      existingUserAccount.twitter = userAccount.twitter
       userAccountBean.save(existingUserAccount)
     }
     else {
-      userAccountBean.save(this.userAccount)
+      userAccountBean.save(userAccount)
     }
 
-    "users?faces-redirect=true"
+    'users?faces-redirect=true'
   }
 
   String savePersonalData() {
-    if (userAccount != null) {
-      UserAccount existingUserAccount = userAccountBean.find(userAccount.getId())
+    if (userAccount) {
+      UserAccount existingUserAccount = userAccountBean.find(userAccount.id)
 
-      existingUserAccount.setCountry(this.locationMBean.getCountry())
-      existingUserAccount.setProvince(this.locationMBean.getProvince())
-      existingUserAccount.setCity(this.locationMBean.getCity())
-      existingUserAccount.setTimeZone(this.locationMBean.getSelectedTimeZone())
-      existingUserAccount.setFirstName(userAccount.getFirstName())
-      existingUserAccount.setLastName(userAccount.getLastName())
-      existingUserAccount.setGender(userAccount.getGender())
-      existingUserAccount.setWebsite(userAccount.getWebsite())
-      existingUserAccount.setTwitter(userAccount.getTwitter())
-      existingUserAccount.setPublicProfile(userAccount.getPublicProfile())
+      existingUserAccount.country = locationMBean.country
+      existingUserAccount.province = locationMBean.province
+      existingUserAccount.city = locationMBean.city
+      existingUserAccount.timeZone = locationMBean.selectedTimeZone
+      existingUserAccount.firstName = userAccount.firstName
+      existingUserAccount.lastName = userAccount.lastName
+      existingUserAccount.gender = userAccount.gender
+      existingUserAccount.website = userAccount.website
+      existingUserAccount.twitter = userAccount.twitter
+      existingUserAccount.publicProfile = userAccount.publicProfile
       userAccountBean.save(existingUserAccount)
 
-      context.getExternalContext().getSessionMap().remove("locationBean")
+      context.externalContext.sessionMap.remove('locationBean')
     }
-    "profile?faces-redirect=true"
+    'profile?faces-redirect=true'
   }
 
   String savePrivacy() {
-    if(userAccount != null) {
-      UserAccount existingUserAccount = userAccountBean.find(userAccount.getId())
-      existingUserAccount.setPublicProfile(userAccount.getPublicProfile())
-      existingUserAccount.setMailingList(userAccount.getMailingList())
-      existingUserAccount.setNews(userAccount.getNews())
-      existingUserAccount.setGeneralOffer(userAccount.getGeneralOffer())
-      existingUserAccount.setJobOffer(userAccount.getJobOffer())
-      existingUserAccount.setEvent(userAccount.getEvent())
-      existingUserAccount.setSponsor(userAccount.getSponsor())
-      existingUserAccount.setSpeaker(userAccount.getSpeaker())
+    if(userAccount) {
+      UserAccount existingUserAccount = userAccountBean.find(userAccount.id)
+      existingUserAccount.publicProfile = userAccount.publicProfile
+      existingUserAccount.mailingList = userAccount.mailingList
+      existingUserAccount.news = userAccount.news
+      existingUserAccount.generalOffer = userAccount.generalOffer
+      existingUserAccount.jobOffer = userAccount.jobOffer
+      existingUserAccount.event = userAccount.event
+      existingUserAccount.sponsor = userAccount.sponsor
+      existingUserAccount.speaker = userAccount.speaker
 
       if(!isPrivacyValid(existingUserAccount)) {
-        context.addMessage(null, new FacesMessage("Selecione pelo menos uma das opções de privacidade."))
-        return "privacy"
+        context.addMessage(null, new FacesMessage('Selecione pelo menos uma das opções de privacidade.'))
+        return 'privacy'
       }
 
       userAccountBean.save(existingUserAccount)
     }
-    "profile?faces-redirect=true"
+    'profile?faces-redirect=true'
   }
 
   String confirm() {
@@ -374,20 +359,20 @@ public class UserAccountMBean implements Serializable {
     } catch (IllegalArgumentException iae) {
       LOGGER.log(Level.INFO, iae.message, iae)
       context.addMessage(null, new FacesMessage(iae.message))
-      return "user"
+      return 'user'
     }
-    "users?faces-redirect=true"
+    'users?faces-redirect=true'
   }
 
   String checkUserAsVerified() {
     userAccountBean.markUserAsVerified(userAccount)
-    "user?faces-redirect=true"
+    'user?faces-redirect=true'
   }
 
   String deactivateMembershipOwnWill() {
     userAccountBean.deactivateMembership(userAccount, DeactivationType.OWNWILL)
 
-    HttpSession session = (HttpSession) context.getExternalContext().getSession(false)
+    HttpSession session = (HttpSession) context.externalContext.getSession(false)
     try {
       request.logout()
       session.invalidate()
@@ -395,25 +380,24 @@ public class UserAccountMBean implements Serializable {
       LOGGER.log(Level.INFO, se.message, se)
     }
 
-    "/index?faces-redirect=true"
+    '/index?faces-redirect=true'
   }
 
   String deactivateMembership() {
     userAccountBean.deactivateMembership(userAccount, DeactivationType.ADMINISTRATIVE)
-    "users?faces-redirect=true"
+    'users?faces-redirect=true'
   }
 
   /** Check whether at least one of the privacy options was checked. */
   private boolean isPrivacyValid(UserAccount userAccount) {
-    if(userAccount.getPublicProfile() ||
-        userAccount.getMailingList() ||
-        userAccount.getEvent() ||
-        userAccount.getNews() ||
-        userAccount.getGeneralOffer() ||
-        userAccount.getJobOffer() ||
-        userAccount.getSponsor() ||
-        userAccount.getSpeaker()) { return true }
-    return false
+    userAccount.publicProfile ||
+    userAccount.mailingList ||
+    userAccount.event ||
+    userAccount.news ||
+    userAccount.generalOffer ||
+    userAccount.jobOffer ||
+    userAccount.sponsor ||
+    userAccount.speaker
   }
 
   /**
@@ -422,7 +406,7 @@ public class UserAccountMBean implements Serializable {
    */
   String removeUserAccount() {
     userAccountBean.remove(userAccount.id)
-    "users?faces-redirect=true"
+    'users?faces-redirect=true'
   }
 
   List<Community> getExistingCommunities() {
@@ -437,5 +421,13 @@ public class UserAccountMBean implements Serializable {
       hasMultipleCommunities = communityBean.hasMultipleCommunities()
     }
     hasMultipleCommunities
+  }
+
+  private void addContextInfoMessage(String key) {
+      context.addMessage(userId, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage(key), ''))
+  }
+
+  private ValidatorException newValidatorException(String key) {
+    new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundleHelper.getMessage(key), null))
   }
 }
