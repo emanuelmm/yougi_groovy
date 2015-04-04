@@ -18,70 +18,72 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.web.model;
+package org.yougi.web.model
 
-import org.yougi.business.UserAccountBean;
-import org.yougi.reference.Role;
-import org.yougi.util.ResourceBundleHelper;
-import org.yougi.annotation.ManagedProperty;
+import org.yougi.annotation.ManagedProperty
+import org.yougi.business.UserAccountBean
+import org.yougi.reference.Role
+import org.yougi.util.ResourceBundleHelper
 
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import groovy.transform.CompileStatic
+
+import javax.ejb.EJB
+import javax.enterprise.context.RequestScoped
+import javax.faces.application.FacesMessage
+import javax.faces.context.FacesContext
+import javax.inject.Inject
+import javax.inject.Named
+import javax.servlet.ServletException
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
+@CompileStatic
 @Named
 @RequestScoped
-public class SecurityBackingMBean {
+class SecurityBackingMBean {
 
-  private static final Logger LOGGER = Logger.getLogger(SecurityBackingMBean.class.getSimpleName());
+  private static final Logger LOGGER = Logger.getLogger(this.simpleName)
 
   @EJB
-  private UserAccountBean userAccountBean;
+  private UserAccountBean userAccountBean
 
-  private String username;
-  private String password;
+  String username
+  String password
 
-  @ManagedProperty(value="#{sessionScope}")
-  private Map<String, Object> sessionMap;
-
-  @Inject
-  private FacesContext context;
+  @ManagedProperty(value='#{sessionScope}')
+  Map<String, Object> sessionMap
 
   @Inject
-  private HttpServletRequest request;
+  private FacesContext context
 
-  public boolean isUserSignedIn() {
-    return sessionMap.containsKey("signedUser");
+  @Inject
+  private HttpServletRequest request
+
+  boolean isUserSignedIn() {
+    return sessionMap.containsKey('signedUser')
   }
 
-  public String login() {
-    println "HAIL !!!"
+  String login() {
+    println 'HAIL !!!'
     if(userAccountBean.thereIsNoAccount()) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage("infoFirstUser"), ""));
-      return "/registration";
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage('infoFirstUser'), ''))
+      return '/registration'
     } else {
-      return "/login?faces-redirect=true";
+      return '/login?faces-redirect=true'
     }
   }
 
-  public String register() {
+  String register() {
     if(userAccountBean.thereIsNoAccount()) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage("infoFirstUser"), ""));
-      return "/registration";
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage('infoFirstUser'), ''))
+      return '/registration'
     } else {
-      return "/registration?faces-redirect=true";
+      return '/registration?faces-redirect=true'
     }
   }
 
@@ -90,59 +92,39 @@ public class SecurityBackingMBean {
    * destroying the session.
    * @return The next step in the navigation flow.
    */
-  public String logout() {
-    HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+  String logout() {
+    HttpSession session = (HttpSession) context.externalContext.getSession(false)
     try {
-      request.logout();
-      session.invalidate();
+      request.logout()
+      session.invalidate()
     } catch(ServletException se) {
-      LOGGER.log(Level.INFO, se.getMessage(), se);
-      return "/index?faces-redirect=true";
+      LOGGER.log(Level.INFO, se.message, se)
+      return '/index?faces-redirect=true'
     }
-    return "/index?faces-redirect=true";
+    return '/index?faces-redirect=true'
   }
 
-  public Boolean getIsUserAdministrator() {
-    return request.isUserInRole(Role.ADMIN.toString());
+  Boolean getIsUserAdministrator() {
+    return isUserInRole(Role.ADMIN)
   }
 
-  public Boolean getIsUserLeader() {
-    return request.isUserInRole(Role.LEADER.toString());
+  Boolean getIsUserLeader() {
+    return isUserInRole(Role.LEADER)
   }
 
-  public Boolean getIsUserHelper() {
-    return request.isUserInRole(Role.HELPER.toString());
+  Boolean getIsUserHelper() {
+    return isUserInRole(Role.HELPER)
   }
 
-  public Boolean getIsUserPartner() {
-    return request.isUserInRole(Role.PARTNER.toString());
+  Boolean getIsUserPartner() {
+    return isUserInRole(Role.PARTNER)
   }
 
-  public Boolean getIsUserSpeaker() {
-    return request.isUserInRole(Role.SPEAKER.toString());
+  Boolean getIsUserSpeaker() {
+    return isUserInRole(Role.SPEAKER)
   }
 
-  public Map<String, Object> getSessionMap() {
-    return sessionMap;
-  }
-
-  public void setSessionMap(Map<String, Object> sessionMap) {
-    this.sessionMap = sessionMap;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getPassword() {
-    return this.password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
+  private Boolean isUserInRole(Role role) {
+    return request.isUserInRole(role.toString())
   }
 }
