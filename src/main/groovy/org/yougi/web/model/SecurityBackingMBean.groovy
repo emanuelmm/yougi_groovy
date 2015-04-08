@@ -42,7 +42,6 @@ import java.util.logging.Logger
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@CompileStatic
 @Named
 @RequestScoped
 class SecurityBackingMBean {
