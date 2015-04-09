@@ -108,7 +108,7 @@
                     			 <h:commandButton value="#{bundle.save}" action="#{timezoneMBean.save}" styleClass="btn btn-primary">
                             		<f:param name="timezone" value="#{timezoneMBean.timezone.id}"/>
                         		</h:commandButton>
-                        		<h:commandButton value="#{bundle.remove}" action="#{timezoneMBean.remove}" rendered="#{timezoneMBean.existent}" onclick="return confirmAction('#{bundle.warnCode0005}');" styleClass="btn btn-danger">
+                        		<h:commandButton value="#{bundle.remove}" action="#{timezoneMBean.remove}" rendered="#{timezoneMBean.timezoneExistent}" onclick="return confirmAction('#{bundle.warnCode0005}');" styleClass="btn btn-danger">
                             		<f:param name="timezone" value="#{timezoneMBean.timezone.id}"/>
                         		</h:commandButton>
                         		<h:button value="#{bundle.cancel}" outcome="timezones" styleClass="btn btn-default"/>
