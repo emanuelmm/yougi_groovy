@@ -36,7 +36,7 @@ import java.util.List
  */
 @Named
 @RequestScoped
-public class TopicMBean {
+class TopicMBean {
 
   @EJB
   TopicBean topicBean
@@ -46,7 +46,7 @@ public class TopicMBean {
   @Inject
   @ManagedProperty('#{param.topic}')
   String topicName
-  Boolean topicExistent = Boolean.FALSE
+  Boolean topicExistent
 
   TopicMBean() {
     topic = new Topic()
