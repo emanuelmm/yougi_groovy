@@ -29,71 +29,72 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.StringTokenizer;
+import javax.transaction.Transactional;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@Stateless
+@Transactional
 public class TopicBean {
 
-    @PersistenceContext
-    private EntityManager em;
+  @PersistenceContext
+  private EntityManager em;
 
-    public Topic findTopic(String name) {
-        return em.find(Topic.class, name);
+  public Topic findTopic(String name) {
+    return em.find(Topic.class, name);
+  }
+
+  public List<Topic> findTopics() {
+    return em.createQuery("select t from Topic t order by t.name asc", Topic.class).getResultList();
+  }
+
+  public List<Topic> findTopics(String query) {
+    return em.createQuery("select t from Topic t where t.name like '"+ query +"%' order by t.name asc", Topic.class).getResultList();
+  }
+
+  public void save(Topic topic) {
+    Topic existing = em.find(Topic.class, topic.getName());
+    if(existing == null) {
+      em.persist(topic);
+    } else {
+      em.merge(topic);
+    }
+  }
+
+  /**
+   * Receive a list of topics separated by comma and verify if they already
+   * exist. Topics are created with default values if they don't exist yet.
+   */
+  public void consolidateTopics(String topics) throws BusinessLogicException {
+    if(StringUtils.isNullOrBlank(topics)) {
+      return;
     }
 
-    public List<Topic> findTopics() {
-        return em.createQuery("select t from Topic t order by t.name asc", Topic.class).getResultList();
+    StringTokenizer st = new StringTokenizer(topics, ",");
+    String topicName;
+    Topic topic;
+    while(st.hasMoreTokens()) {
+      topicName = st.nextToken().trim();
+      topic = findTopic(topicName.toUpperCase());
+      if(topic == null) {
+        topic = new Topic();
+        topic.setName(topicName);
+        topic.setLabel(topicName);
+        topic.setDescription(topicName);
+        topic.setValid(Boolean.TRUE);
+        em.persist(topic);
+      }
+    }
+  }
+
+  public void remove(String name) {
+    if(StringUtils.isNullOrBlank(name)) {
+      return;
     }
 
-    public List<Topic> findTopics(String query) {
-        return em.createQuery("select t from Topic t where t.name like '"+ query +"%' order by t.name asc", Topic.class).getResultList();
+    Topic topic = em.find(Topic.class, name);
+    if(topic != null) {
+      em.remove(topic);
     }
-
-    public void save(Topic topic) {
-        Topic existing = em.find(Topic.class, topic.getName());
-        if(existing == null) {
-            em.persist(topic);
-        } else {
-            em.merge(topic);
-        }
-    }
-
-    /**
-     * Receive a list of topics separated by comma and verify if they already
-     * exist. Topics are created with default values if they don't exist yet.
-     */
-    public void consolidateTopics(String topics) throws BusinessLogicException {
-        if(StringUtils.isNullOrBlank(topics)) {
-            return;
-        }
-
-        StringTokenizer st = new StringTokenizer(topics, ",");
-        String topicName;
-        Topic topic;
-        while(st.hasMoreTokens()) {
-            topicName = st.nextToken().trim();
-            topic = findTopic(topicName.toUpperCase());
-            if(topic == null) {
-                topic = new Topic();
-                topic.setName(topicName);
-                topic.setLabel(topicName);
-                topic.setDescription(topicName);
-                topic.setValid(Boolean.TRUE);
-                em.persist(topic);
-            }
-        }
-    }
-
-    public void remove(String name) {
-        if(StringUtils.isNullOrBlank(name)) {
-            return;
-        }
-
-        Topic topic = em.find(Topic.class, name);
-        if(topic != null) {
-            em.remove(topic);
-        }
-    }
+  }
 }

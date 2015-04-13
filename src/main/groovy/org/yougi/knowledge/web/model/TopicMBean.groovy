@@ -38,7 +38,7 @@ import java.util.List
 @RequestScoped
 class TopicMBean {
 
-  @EJB
+  @Inject
   TopicBean topicBean
   Topic topic
   List<Topic> topics
