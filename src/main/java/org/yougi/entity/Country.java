@@ -56,9 +56,8 @@ public class Country implements Serializable {
         return acronym;
     }
 
-    public Country setAcronym(String acronym) {
+    public void setAcronym(String acronym) {
         this.acronym = acronym;
-        return this;
     }
 
     public String getName() {

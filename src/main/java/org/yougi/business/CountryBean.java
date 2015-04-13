@@ -26,6 +26,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import javax.transaction.Transactional;
 
 /**
  * Manages data of countries, states or provinces and cities because these
@@ -34,7 +35,7 @@ import java.util.List;
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@Stateless
+@Transactional
 public class CountryBean {
     @PersistenceContext
     private EntityManager em;
@@ -59,11 +60,7 @@ public class CountryBean {
 
     public void saveCountry(Country country) {
         Country existing = em.find(Country.class, country.getAcronym());
-        if(existing == null) {
-            em.persist(country);
-        } else {
-            em.merge(country);
-        }
+        em.merge(country);
     }
 
     public void removeCountry(String id) {
