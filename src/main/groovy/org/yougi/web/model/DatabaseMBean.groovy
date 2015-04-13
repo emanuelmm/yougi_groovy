@@ -25,7 +25,6 @@ import org.yougi.entity.DatabaseChangeLog
 import org.yougi.annotation.ManagedProperty
 
 import javax.annotation.PostConstruct
-import javax.ejb.EJB
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
 import javax.inject.Named
@@ -37,8 +36,8 @@ import javax.inject.Named
 @RequestScoped
 class DatabaseMBean {
 
-  @EJB
-  DatabaseChangeLogBean ejb
+  @Inject
+  DatabaseChangeLogBean bean
   @Inject
   @ManagedProperty('#{param.id}')
   String id
@@ -49,7 +48,7 @@ class DatabaseMBean {
   @PostConstruct
   void load() {
     if (id) {
-      databaseChangeLog = ejb.find(id)
+      databaseChangeLog = bean.find(id)
     } else {
       databaseChangeLog = new DatabaseChangeLog()
     }
@@ -57,7 +56,7 @@ class DatabaseMBean {
 
   def getDatabaseChangeLogs() {
     if (!databaseChangeLogs) {
-      databaseChangeLogs = ejb.findAll()
+      databaseChangeLogs = bean.findAll()
     }
     databaseChangeLogs
   }

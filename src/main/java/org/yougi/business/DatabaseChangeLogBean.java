@@ -23,7 +23,6 @@ package org.yougi.business;
 import org.yougi.entity.DatabaseChangeLog;
 import org.yougi.util.PackageResourceHelper;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.*;
@@ -36,63 +35,62 @@ import java.util.logging.Logger;
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@Stateless
 public class DatabaseChangeLogBean extends AbstractBean<DatabaseChangeLog> {
 
-    private static final Logger LOGGER = Logger.getLogger(DatabaseChangeLogBean.class.getSimpleName());
+  private static final Logger LOGGER = Logger.getLogger(DatabaseChangeLogBean.class.getSimpleName());
 
-    @PersistenceContext
-    private EntityManager em;
+  @PersistenceContext
+  private EntityManager em;
 
-    public DatabaseChangeLogBean() {
-        super(DatabaseChangeLog.class);
+  public DatabaseChangeLogBean() {
+    super(DatabaseChangeLog.class);
+  }
+
+  @Override
+  protected EntityManager getEntityManager() {
+    return em;
+  }
+
+  public List<DatabaseChangeLog> findAll() {
+    return em.createQuery("select dbcl from DatabaseChangeLog dbcl order by dbcl.orderExecuted asc", DatabaseChangeLog.class)
+      .getResultList();
+  }
+
+  @Override
+  public DatabaseChangeLog find(String id) {
+    DatabaseChangeLog databaseChangeLog = super.find(id);
+    databaseChangeLog.setChangesContent(getChangeLogContent(id));
+    return databaseChangeLog;
+  }
+
+  private String getChangeLogContent(String id) {
+    File changeLogFile = getChangeLogFile(id);
+    StringBuilder content = new StringBuilder();
+    try (InputStream in = Files.newInputStream(changeLogFile.toPath());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        content.append(line);
+        content.append("\n");
+      }
+    } catch (IOException ioe) {
+      LOGGER.log(Level.WARNING, ioe.getMessage(), ioe);
     }
+    return content.toString();
+  }
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-
-    public List<DatabaseChangeLog> findAll() {
-        return em.createQuery("select dbcl from DatabaseChangeLog dbcl order by dbcl.orderExecuted asc", DatabaseChangeLog.class)
-                 .getResultList();
-    }
-
-    @Override
-    public DatabaseChangeLog find(String id) {
-        DatabaseChangeLog databaseChangeLog = super.find(id);
-        databaseChangeLog.setChangesContent(getChangeLogContent(id));
-        return databaseChangeLog;
-    }
-
-    private String getChangeLogContent(String id) {
-        File changeLogFile = getChangeLogFile(id);
-        StringBuilder content = new StringBuilder();
-        try (InputStream in = Files.newInputStream(changeLogFile.toPath());
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-                content.append("\n");
-            }
-        } catch (IOException ioe) {
-            LOGGER.log(Level.WARNING, ioe.getMessage(), ioe);
+  private File getChangeLogFile(String id) {
+    List<File> files = PackageResourceHelper.getFilesFolder("org/yougi/db/changelog");
+    String filename;
+    for(File file : files) {
+      if (file.getName().endsWith(".sql")) {
+        filename = file.getName();
+        filename = filename.substring(9, 9 + id.length());
+        if(filename.equals(id)) {
+          return file;
         }
-        return content.toString();
+      }
     }
-
-    private File getChangeLogFile(String id) {
-        List<File> files = PackageResourceHelper.getFilesFolder("org/yougi/db/changelog");
-        String filename;
-        for(File file : files) {
-            if (file.getName().endsWith(".sql")) {
-                filename = file.getName();
-                filename = filename.substring(9, 9 + id.length());
-                if(filename.equals(id)) {
-                    return file;
-                }
-            }
-        }
-        return null;
-    }
+    return null;
+  }
 }
