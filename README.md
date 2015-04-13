@@ -1,4 +1,14 @@
 # yougi_groovy
+==============
+
+NOTE:
+=====
+
+We need to migrate only the 'MBean' classes for now
+
+These are in 'model' packages
+
+---
 
 download wildfly 8.2.0.Final
 
