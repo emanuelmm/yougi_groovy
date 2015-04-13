@@ -29,7 +29,6 @@ import javax.ejb.EJB
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
 import javax.inject.Named
-import java.util.List
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
@@ -39,29 +38,26 @@ import java.util.List
 class DatabaseMBean {
 
   @EJB
-  DatabaseChangeLogBean databaseChangeLogBean
-  List<DatabaseChangeLog> databaseChangeLogs
-  DatabaseChangeLog databaseChangeLog
+  DatabaseChangeLogBean ejb
   @Inject
   @ManagedProperty('#{param.id}')
   String id
 
+  def databaseChangeLog
+  def databaseChangeLogs
+
   @PostConstruct
   void load() {
     if (id) {
-      databaseChangeLog = databaseChangeLogBean.find(id)
+      databaseChangeLog = ejb.find(id)
     } else {
       databaseChangeLog = new DatabaseChangeLog()
     }
   }
 
-  DatabaseChangeLog getDatabaseChangeLog() {
-    databaseChangeLog
-  }
-
-  List<DatabaseChangeLog> getDatabaseChangeLogs() {
+  def getDatabaseChangeLogs() {
     if (!databaseChangeLogs) {
-      databaseChangeLogs = databaseChangeLogBean.findAll()
+      databaseChangeLogs = ejb.findAll()
     }
     databaseChangeLogs
   }
