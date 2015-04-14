@@ -1,6 +1,8 @@
 # yougi_groovy
 ==============
 
+[![Join the chat at https://gitter.im/yougi/yougi_groovy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yougi/yougi_groovy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 NOTE:
 =====
 
