@@ -38,7 +38,7 @@ import org.yougi.reference.DeactivationType
 import org.yougi.util.ResourceBundleHelper
 import org.yougi.util.StringUtils
 
-import groovy.transform.CompileStatic
+//import groovy.transform.CompileStatic
 
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
@@ -58,7 +58,7 @@ import java.util.logging.Logger
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@CompileStatic
+//@CompileStatic
 @Named
 @RequestScoped
 class UserAccountMBean implements Serializable {

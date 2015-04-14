@@ -43,7 +43,7 @@ import java.util.List;
 @RequestScoped
 public class ProvinceMBean {
 
-    @EJB
+    @Inject
     private CountryBean countryBean;
 
     @EJB

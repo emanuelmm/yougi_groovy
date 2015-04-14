@@ -29,6 +29,7 @@ import org.yougi.entity.Country;
 import org.yougi.entity.Province;
 import org.yougi.entity.Timezone;
 
+import javax.inject.Inject;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -56,7 +57,7 @@ public class LocationMBean implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(LocationMBean.class.getSimpleName());
 
-    @EJB
+    @Inject
     private CountryBean countryBean;
 
     @EJB
