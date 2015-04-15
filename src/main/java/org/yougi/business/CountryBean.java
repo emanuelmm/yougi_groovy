@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import javax.transaction.Transactional;
+import java.io.Serializable;
 
 /**
  * Manages data of countries, states or provinces and cities because these
@@ -36,7 +37,7 @@ import javax.transaction.Transactional;
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Transactional
-public class CountryBean {
+public class CountryBean implements Serializable {
     @PersistenceContext
     private EntityManager em;
 
