@@ -63,14 +63,6 @@ class AccessGroupMBean {
         accessGroupBean.findAccessGroups()
     }
 
-    DualListModel<UserAccount> getMembers() {
-        members
-    }
-
-    void setMembers(DualListModel<UserAccount> members) {
-        this.members = members
-    }
-
     @PostConstruct
     void load() {
         def allUsers = userAccountBean.findAllActiveAccounts()
@@ -92,12 +84,12 @@ class AccessGroupMBean {
         def membersIds = this.members.getTarget()
         UserAccount userAccount
         
-		for(int i = 0; i < membersIds.size(); i++) {
+		for(i = 0; i < membersIds.size(); i++) {
             userAccount = new UserAccount(((UserAccount)membersIds.get(i)).getId())
             selectedMembers.add(userAccount)
         }
-        accessGroupBean.save(this.group, selectedMembers)
+        accessGroupBean.save(this.group, selectedMembers);
         
-		"groups?faces-redirect=true"
+		"groups?faces-redirect=true";
     }
 }
