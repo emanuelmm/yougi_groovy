@@ -38,44 +38,44 @@ import java.util.List
 @RequestScoped
 class TopicMBean {
 
-  @Inject
-  TopicBean topicBean
-  Topic topic
-  List<Topic> topics
+	@Inject
+	TopicBean topicBean
+	Topic topic
+	def topics
 
-  @Inject
-  @ManagedProperty('#{param.topic}')
-  String topicName
-  Boolean topicExistent
+	@Inject
+	@ManagedProperty('#{param.topic}')
+	String topicName
+	Boolean topicExistent
 
-  TopicMBean() {
-    topic = new Topic()
-  }
+	TopicMBean() {
+		topic = new Topic()
+	}
 
-  List<Topic> getTopics() {
-    if(!topics) {
-      topics = topicBean.findTopics()
-    }
-    topics
-  }
+	def getTopics() {
+		if(!topics) {
+			topics = topicBean.findTopics()
+		}
+		topics
+	}
 
-  @PostConstruct
-  void load() {
-    if(topicName) {
-      topic = topicBean.findTopic(topicName)
-      if(topic) {
-        topicExistent = true
-      }
-    }
-  }
+	@PostConstruct
+	void load() {
+		if(topicName) {
+			topic = topicBean.findTopic(topicName)
+			if(topic) {
+				topicExistent = true
+			}
+		}
+	}
 
-  String save() {
-    topicBean.save(topic)
-    'topics?faces-redirect=true'
-  }
+	String save() {
+		topicBean.save(topic)
+		'topics?faces-redirect=true'
+	}
 
-  String remove() {
-    topicBean.remove(topic.name)
-    'topics?faces-redirect=true'
-  }
+	String remove() {
+		topicBean.remove(topic.name)
+		'topics?faces-redirect=true'
+	}
 }
