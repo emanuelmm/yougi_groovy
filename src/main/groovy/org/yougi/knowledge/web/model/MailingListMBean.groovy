@@ -4,7 +4,7 @@
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
  * This application is free software you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by the
+ * under the terms of the GNU Lesser General License as published by the
  * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
@@ -13,69 +13,61 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
- * There is a full copy of the GNU Lesser General Public License along with
+ * There is a full copy of the GNU Lesser General License along with
  * this library. Look for the file license.txt at the root level. If you do not
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
 package org.yougi.knowledge.web.model
 
-import org.yougi.knowledge.business.TopicBean
-import org.yougi.knowledge.entity.Topic
-import org.yougi.annotation.ManagedProperty
-
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
 import javax.inject.Named
-import java.util.List
+
+import org.yougi.annotation.ManagedProperty
+import org.yougi.knowledge.entity.MailingList
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-class TopicMBean {
+class MailingListMBean implements Serializable {
+
+	@EJB
+	private org.yougi.knowledge.business.MailingListBean mailingListBean
 
 	@Inject
-	TopicBean topicBean
-	Topic topic
-	def topics
+	@ManagedProperty('#{param.id}')
+	String id
+	MailingList mailingList
+	def mailingLists
 
-	@Inject
-	@ManagedProperty('#{param.topic}')
-	String topicName
-	Boolean topicExistent
-
-	TopicMBean() {
-		topic = new Topic()
-	}
-
-	def getTopics() {
-		if(!topics) {
-			topics = topicBean.findTopics()
+	List<MailingList> getMailingLists() {
+		if(mailingLists == null) {
+			mailingLists = mailingListBean.findMailingLists()
 		}
-		topics
+		mailingLists
 	}
 
 	@PostConstruct
 	void load() {
-		if(topicName) {
-			topic = topicBean.findTopic(topicName)
-			if(topic) {
-				topicExistent = true
-			}
+		if(id) {
+			mailingList = mailingListBean.find(id)
+		} else {
+			mailingList = new MailingList()
 		}
 	}
 
 	String save() {
-		topicBean.save(topic)
-		'topics?faces-redirect=true'
+		mailingListBean.save(mailingList)
+		'mailing_lists?faces-redirect=true'
 	}
 
 	String remove() {
-		topicBean.remove(topic.name)
-		'topics?faces-redirect=true'
+		mailingListBean.remove(mailingList.id)
+		'mailing_lists?faces-redirect=true'
 	}
 }
