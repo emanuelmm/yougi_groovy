@@ -18,7 +18,7 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.web.model;
+package org.yougi.web.model
 
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
@@ -57,9 +57,9 @@ class AccessGroupMBean {
 	AccessGroup group
 
 	// List of members for the picklist.
-	DualListModel<UserAccount> members
+	def members
 
-	List<AccessGroup> getGroups() {
+	def getGroups() {
 		accessGroupBean.findAccessGroups()
 	}
 
@@ -83,11 +83,12 @@ class AccessGroupMBean {
 		def selectedMembers = new ArrayList<>()
 		def membersIds = this.members.getTarget()
 		UserAccount userAccount
-
-		for(int i = 0; i < membersIds.size(); i++) {
+		
+		for (i in 0..membersIds.size()-1) {
 			userAccount = new UserAccount(((UserAccount)membersIds.get(i)).getId())
 			selectedMembers.add(userAccount)
 		}
+		
 		accessGroupBean.save(this.group, selectedMembers)
 
 		"groups?faces-redirect=true"
