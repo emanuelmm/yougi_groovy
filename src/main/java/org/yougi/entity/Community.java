@@ -56,9 +56,8 @@ public class Community implements Serializable, Identified {
     }
 
     @Override
-    public Community setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {

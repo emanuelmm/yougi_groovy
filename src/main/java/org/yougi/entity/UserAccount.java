@@ -143,9 +143,8 @@ public class UserAccount implements Serializable, Identified {
     }
 
     @Override
-    public UserAccount setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getFirstName() {

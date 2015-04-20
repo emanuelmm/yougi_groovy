@@ -98,9 +98,8 @@ public class SessionEvent implements Serializable, Identified {
     }
 
     @Override
-    public SessionEvent setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public Event getEvent() {

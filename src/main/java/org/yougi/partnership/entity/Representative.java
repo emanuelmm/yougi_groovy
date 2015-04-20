@@ -59,9 +59,8 @@ public class Representative implements Serializable, Identified {
     }
 
     @Override
-    public Representative setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public UserAccount getPerson() {

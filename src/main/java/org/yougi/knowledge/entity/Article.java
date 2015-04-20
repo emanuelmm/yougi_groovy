@@ -80,9 +80,8 @@ public class Article implements Serializable, Identified, PublicContent {
     }
 
     @Override
-    public Article setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     @Override

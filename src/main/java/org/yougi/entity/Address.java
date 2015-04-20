@@ -55,36 +55,32 @@ public class Address {
         return address;
     }
 
-    public Address setAddress(String address) {
+    public void setAddress(String address) {
         this.address = address;
-        return this;
     }
 
     public City getCity() {
         return city;
     }
 
-    public Address setCity(City city) {
+    public void setCity(City city) {
         this.city = city;
-        return this;
     }
 
     public Province getProvince() {
         return province;
     }
 
-    public Address setProvince(Province province) {
+    public void setProvince(Province province) {
         this.province = province;
-        return this;
     }
 
     public Country getCountry() {
         return country;
     }
 
-    public Address setCountry(Country country) {
+    public void setCountry(Country country) {
         this.country = country;
-        return this;
     }
 
     public String getPostalCode() {

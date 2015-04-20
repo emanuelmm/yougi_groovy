@@ -80,9 +80,8 @@ public class JobExecution implements Serializable, Identified {
     }
 
     @Override
-    public JobExecution setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public JobScheduler getJobScheduler() {

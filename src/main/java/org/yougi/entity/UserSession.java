@@ -62,9 +62,8 @@ public class UserSession implements Serializable, Identified {
     }
 
     @Override
-    public UserSession setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public UserAccount getUserAccount() {

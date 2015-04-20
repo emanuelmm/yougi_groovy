@@ -70,9 +70,8 @@ public abstract class JobScheduler implements Serializable, Identified {
     }
 
     @Override
-    public JobScheduler setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {

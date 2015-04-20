@@ -69,9 +69,8 @@ public class WebSource implements Serializable, Identified {
     }
 
     @Override
-    public WebSource setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getTitle() {

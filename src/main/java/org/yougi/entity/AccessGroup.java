@@ -57,9 +57,8 @@ public class AccessGroup implements Serializable, Identified {
     }
 
     @Override
-    public AccessGroup setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {

@@ -60,9 +60,8 @@ public class EventVenue implements Serializable, Identified {
     }
 
     @Override
-    public EventVenue setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public Event getEvent() {

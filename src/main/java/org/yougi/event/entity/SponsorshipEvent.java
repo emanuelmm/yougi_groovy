@@ -61,9 +61,8 @@ public class SponsorshipEvent implements Serializable, Identified {
     }
 
     @Override
-    public SponsorshipEvent setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public Event getEvent() {

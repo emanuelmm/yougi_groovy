@@ -74,9 +74,8 @@ public class MessageTemplate implements Serializable, Identified {
     }
 
     @Override
-    public MessageTemplate setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getTitle() {

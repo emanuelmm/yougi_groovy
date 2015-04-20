@@ -58,9 +58,8 @@ public class Province implements Serializable, Identified {
     }
 
     @Override
-    public Province setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {
