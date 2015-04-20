@@ -31,7 +31,6 @@ import javax.ejb.EJB
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
 import javax.inject.Named
-import java.util.List
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
@@ -40,54 +39,50 @@ import java.util.List
 @RequestScoped
 class CommunityMBean {
 
-    @EJB
-    CommunityBean communityBean
+  @EJB
+  CommunityBean communityBean
 
-    @EJB
-    CommunityMemberBean communityMemberBean
+  @EJB
+  CommunityMemberBean communityMemberBean
 
-    @Inject
-    @ManagedProperty("#{param.id}")
-    String id
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
 
-    Community community
+  Community community
+  def communities
+  def communityMembers
 
-    def communities
-    def communityMembers
-   
-    def getCommunities() {
-        if(this.communities == null) {
-            this.communities = communityBean.findAll()
-        }
-        this.communities
+  def getCommunities() {
+    if (!communities) {
+      communities = communityBean.findAll()
     }
+    communities
+  }
 
-    public def getCommunityMembers() {
-        if(!this.communityMembers) {
-            this.communityMembers = communityMemberBean.findBy(this.community)
-        }
-		
-        this.communityMembers
+  def getCommunityMembers() {
+    if (!communityMembers) {
+      communityMembers = communityMemberBean.findBy(community)
     }
+    communityMembers
+  }
 
-    @PostConstruct
-    void load() {
-        if (id) {
-            this.community = communityBean.find(id)
-        } else {
-            this.community = new Community()
-        }
+  @PostConstruct
+  void load() {
+    if (id) {
+      community = communityBean.find(id)
+    } else {
+      community = new Community()
     }
+  }
 
-    String save() {
-        communityBean.save(this.community)
-        
-		"communities?faces-redirect=true"
-    }
+  String save() {
+    communityBean.save(community)
+    'communities?faces-redirect=true'
+  }
 
-    String remove() {
-        communityBean.remove(this.community.getId())
-        
-		"communities?faces-redirect=true"
-    }
+  String remove() {
+    communityBean.remove(community.id)
+    'communities?faces-redirect=truei'
+  }
 }
