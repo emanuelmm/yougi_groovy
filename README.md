@@ -3,12 +3,9 @@
 
 [![Join the chat at https://gitter.im/yougi/yougi_groovy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yougi/yougi_groovy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-NOTE:
-=====
-
-We need to migrate only the 'MBean' classes for now
-
-These are in 'model' packages
+Do this:
+========
+https://github.com/yougi/yougi_groovy/issues/27
 
 ---
 

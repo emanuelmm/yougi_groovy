@@ -36,9 +36,6 @@ import org.yougi.entity.UserAccount
 import org.yougi.entity.UserSession
 import org.yougi.reference.DeactivationType
 import org.yougi.util.ResourceBundleHelper
-import org.yougi.util.StringUtils
-
-//import groovy.transform.CompileStatic
 
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
@@ -58,7 +55,6 @@ import java.util.logging.Logger
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-//@CompileStatic
 @Named
 @RequestScoped
 class UserAccountMBean implements Serializable {
@@ -170,7 +166,7 @@ class UserAccountMBean implements Serializable {
   }
 
   boolean isConfirmed() {
-    StringUtils.isNullOrBlank(userAccount.confirmationCode)
+    !userAccount.confirmationCode
   }
 
   void validateUserId(FacesContext context, UIComponent toValidate, value) {
@@ -209,7 +205,7 @@ class UserAccountMBean implements Serializable {
 
   @PostConstruct
   void load() {
-    if(!StringUtils.isNullOrBlank(id)) {
+    if(id) {
       userAccount = userAccountBean.find(id)
       authentication = authenticationBean.findByUserAccount(userAccount)
       historicMessages = messageHistoryBean.findByRecipient(userAccount)
@@ -228,7 +224,7 @@ class UserAccountMBean implements Serializable {
       locationMBean.selectedTimeZone = userAccount.timeZone
     }
 
-    if(!StringUtils.isNullOrBlank(letter)) {
+    if(letter) {
       userAccounts = userAccountBean.findAllStartingWith(letter)
     }
   }

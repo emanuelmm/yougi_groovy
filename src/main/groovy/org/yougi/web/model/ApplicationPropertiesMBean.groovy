@@ -25,7 +25,6 @@ import org.yougi.business.TimezoneBean
 import org.yougi.entity.Timezone
 import org.yougi.reference.Properties
 import org.yougi.util.ResourceBundleHelper as RBH
-import org.yougi.util.StringUtils
 
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
