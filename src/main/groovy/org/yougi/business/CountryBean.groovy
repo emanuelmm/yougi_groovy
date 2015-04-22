@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,16 +18,16 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.business;
+package org.yougi.business
 
-import org.yougi.entity.Country;
+import org.yougi.entity.Country
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-import javax.transaction.Transactional;
-import java.io.Serializable;
+import javax.ejb.Stateless
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+import java.util.List
+import javax.transaction.Transactional
+import java.io.Serializable
 
 /**
  * Manages data of countries, states or provinces and cities because these
@@ -37,37 +37,37 @@ import java.io.Serializable;
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Transactional
-public class CountryBean implements Serializable {
-    @PersistenceContext
-    private EntityManager em;
+class CountryBean implements Serializable {
 
-    public Country findCountry(String acronym) {
-        if(acronym != null) {
-            return em.find(Country.class, acronym);
-        } else {
-            return null;
-        }
-    }
+  @PersistenceContext
+  private EntityManager em
 
-    public List<Country> findCountries() {
-        return em.createQuery("select c from Country c order by c.name asc", Country.class)
-                 .getResultList();
+  Country findCountry(String acronym) {
+    def obj = null
+    if (acronym) {
+      obj = em.find(Country, acronym)
     }
+    obj
+  }
 
-    public List<Country> findAssociatedCountries() {
-        return em.createQuery("select distinct p.country from Province p order by p.country asc", Country.class)
-                 .getResultList();
-    }
+  List<Country> findCountries() {
+    def jpql = 'select c from Country c order by c.name asc'
+    em.createQuery(jpql, Country).getResultList()
+  }
 
-    public void saveCountry(Country country) {
-        Country existing = em.find(Country.class, country.getAcronym());
-        em.merge(country);
-    }
+  List<Country> findAssociatedCountries() {
+    def jpql = 'select distinct p.country from Province p order by p.country asc'
+    em.createQuery(jpql, Country).getResultList()
+  }
 
-    public void removeCountry(String id) {
-        Country country = em.find(Country.class, id);
-        if(country != null) {
-            em.remove(country);
-        }
+  void saveCountry(Country country) {
+    em.merge(country)
+  }
+
+  void removeCountry(String id) {
+    Country country = em.find(Country, id)
+    if (country) {
+      em.remove(country)
     }
+  }
 }
