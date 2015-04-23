@@ -18,132 +18,114 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.web.model;
+package org.yougi.web.model
 
-import org.yougi.business.CityBean;
-import org.yougi.business.TimezoneBean;
-import org.yougi.business.UserAccountBean;
-import org.yougi.entity.*;
-import org.yougi.annotation.ManagedProperty;
+import org.yougi.business.CityBean
+import org.yougi.business.TimezoneBean
+import org.yougi.business.UserAccountBean
+import org.yougi.entity.*
+import org.yougi.annotation.ManagedProperty
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.List;
+import groovy.transform.CompileStatic;
+
+import javax.annotation.PostConstruct
+import javax.ejb.EJB
+import javax.enterprise.context.RequestScoped
+import javax.inject.Inject
+import javax.inject.Named
+import javax.persistence.metamodel.StaticMetamodel;
+
+import java.io.Serializable
+import java.util.List
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-public class CityMBean implements Serializable {
-    private static final long serialVersionUID = 1L;
+@CompileStatic
+class CityMBean implements Serializable {
+	private static final long serialVersionUID = 1L
 
-    @EJB
-    private CityBean cityBean;
+	@EJB
+	CityBean cityBean
 
-    @EJB
-    private TimezoneBean timezoneBean;
+	@EJB
+	TimezoneBean timezoneBean
 
-    @EJB
-    private UserAccountBean userAccountBean;
+	@EJB
+	UserAccountBean userAccountBean
 
-    @Inject
-    @ManagedProperty("#{param.id}")
-    private String id;
+	@Inject
+	@ManagedProperty('#{param.id}')
+	String id
 
-    @Inject
-    private LocationMBean locationMBean;
+	@Inject
+	LocationMBean locationMBean
 
-    private City city;
+	City city
 
-    private List<City> cities;
-    private List<Timezone> timezones;
+	def cities
+	def timezones
 
-    public CityMBean() {
-        this.city = new City();
-    }
+	CityMBean() {
+		this.city = new City()
+	}
 
-    public String getId() {
-        return id;
-    }
+	def getCities() {
+		if(!this.cities) {
+			this.cities = cityBean.findAll()
+		}
+		this.cities
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	def getInhabitants() {
+		userAccountBean.findInhabitantsFrom(this.city)
+	}
 
-    public LocationMBean getLocationMBean() {
-        return locationMBean;
-    }
+	def getTimezones() {
+		if(!this.timezones) {
+			this.timezones = timezoneBean.findTimezones()
+		}
+		this.timezones
+	}
 
-    public void setLocationMBean(LocationMBean locationMBean) {
-        this.locationMBean = locationMBean;
-    }
+	@PostConstruct
+	void load() {
+		if (this.id) {
+			this.city = cityBean.find(id)
 
-    public City getCity() {
-        return city;
-    }
+			locationMBean.initialize()
 
-    public void setCity(City city) {
-        this.city = city;
-    }
+			if (this.city.country) {
+				locationMBean.setSelectedCountry(this.city.country.acronym)
+			}
 
-    public List<City> getCities() {
-        if(this.cities == null) {
-            this.cities = cityBean.findAll();
-        }
-        return this.cities;
-    }
+			if (this.city.province) {
+				locationMBean.setSelectedProvince(this.city.province.id)
+			}
+		}
+	}
 
-    public List<UserAccount> getInhabitants() {
-        return userAccountBean.findInhabitantsFrom(this.city);
-    }
+	String save() {
+		Country country = this.locationMBean.getCountry()
+		if (country) {
+			this.city.country = country
+		}
 
-    public List<Timezone> getTimezones() {
-        if(this.timezones == null) {
-            this.timezones = timezoneBean.findTimezones();
-        }
-        return this.timezones;
-    }
+		Province province = this.locationMBean.getProvince()
+		if (province) {
+			this.city.province = province
+		}
 
-    @PostConstruct
-    public void load() {
-        if (this.id != null && !this.id.isEmpty()) {
-            this.city = cityBean.find(id);
+		cityBean.save(this.city)
 
-            locationMBean.initialize();
+		'cities?faces-redirect=true'
+	}
 
-            if (this.city.getCountry() != null) {
-                locationMBean.setSelectedCountry(this.city.getCountry().getAcronym());
-            }
+	String remove() {
+		cityBean.remove(city.id)
 
-            if (this.city.getProvince() != null) {
-                locationMBean.setSelectedProvince(this.city.getProvince().getId());
-            }
-        }
-    }
-
-    public String save() {
-        Country country = this.locationMBean.getCountry();
-        if (country != null) {
-            this.city.setCountry(country);
-        }
-
-        Province province = this.locationMBean.getProvince();
-        if (province != null) {
-            this.city.setProvince(province);
-        }
-
-        cityBean.save(this.city);
-
-        return "cities?faces-redirect=true";
-    }
-
-    public String remove() {
-        cityBean.remove(city.getId());
-        return "cities?faces-redirect=true";
-    }
+		'cities?faces-redirect=true'
+	}
 }
