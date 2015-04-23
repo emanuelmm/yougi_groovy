@@ -43,7 +43,6 @@ import java.util.List
  */
 @Named
 @RequestScoped
-@CompileStatic
 class CityMBean implements Serializable {
 	private static final long serialVersionUID = 1L
 
