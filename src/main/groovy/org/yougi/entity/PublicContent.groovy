@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,23 +18,17 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.entity;
+package org.yougi.entity
 
 /**
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-public interface PublicContent {
-
-    public String getId();
-
-    public String getTitle();
-
-    public String getAuthor();
-
-    public String getContent();
-
-    public String getSummary();
-
-    public String getUrl();
+interface PublicContent {
+  String getId()
+  String getTitle()
+  String getAuthor()
+  String getContent()
+  String getSummary()
+  String getUrl()
 }

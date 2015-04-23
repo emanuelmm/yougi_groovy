@@ -42,7 +42,7 @@ class ProvinceMBean {
 
   @Inject
   CountryBean countryBean
-  @EJB
+  @Inject
   ProvinceBean provinceBean
   @Inject
   @ManagedProperty('#{param.id}')
@@ -107,7 +107,7 @@ class ProvinceMBean {
   }
 
   String remove() {
-    provinceBean.remove(province.id)
+    provinceBean.remove(province)
     'provinces?faces-redirect=true'
   }
 }
