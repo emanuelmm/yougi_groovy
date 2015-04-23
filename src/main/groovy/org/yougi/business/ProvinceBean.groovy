@@ -18,43 +18,45 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.business;
+package org.yougi.business
 
-import org.yougi.entity.Country;
-import org.yougi.entity.Province;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
+import org.yougi.entity.Country
+import org.yougi.entity.Province
+import org.yougi.business.GenericPersistence
+import javax.inject.Inject
 
 /**
- *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@Stateless
-public class ProvinceBean extends AbstractBean<Province> {
+class ProvinceBean implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
+  @Inject
+  private GenericPersistence persistence
 
-    public ProvinceBean() {
-        super(Province.class);
+  def find(id) {
+    persistence.findById(Province, id)
+  }
+
+  def save(Province p) {
+    Province existPersistence = find(p.id)
+    if (existPersistence) {
+      persistence.update(p)
+    } else {
+      persistence.save(p)
     }
+  }
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
+  def remove(Province p) {
+    persistence.remove(Province, p.id)
+  }
 
-    public List<Province> findAll() {
-        return em.createQuery("select p from Province p order by p.country.name, p.name asc", Province.class)
-                 .getResultList();
-    }
+  def findAll() {
+    def jpql = 'select p from Province p order by p.country.name, p.name asc'
+    persistence.findAll(jpql, Province)
+  }
 
-    public List<Province> findByCountry(Country country) {
-        return em.createQuery("select p from Province p where p.country = :country order by p.name asc", Province.class)
-                 .setParameter("country", country)
-                 .getResultList();
-    }
+  def findByCountry(Country country) {
+    def jpql = 'select p from Province p where p.country = ?1 order by p.name asc'
+    persistence.findAllWithParam(jpql, country, Province)
+  }
 }

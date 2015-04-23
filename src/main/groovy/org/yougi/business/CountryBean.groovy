@@ -22,12 +22,9 @@ package org.yougi.business
 
 import org.yougi.entity.Country
 
-import javax.ejb.Stateless
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import java.util.List
 import javax.transaction.Transactional
-import java.io.Serializable
+import javax.inject.Inject
+import org.yougi.business.GenericPersistence
 
 /**
  * Manages data of countries, states or provinces and cities because these
@@ -39,35 +36,36 @@ import java.io.Serializable
 @Transactional
 class CountryBean implements Serializable {
 
-  @PersistenceContext
-  private EntityManager em
+  @Inject
+  GenericPersistence persistence
 
   Country findCountry(String acronym) {
     def obj = null
     if (acronym) {
-      obj = em.find(Country, acronym)
+      obj = persistence.findById(Country, acronym)
     }
     obj
   }
 
-  List<Country> findCountries() {
-    def jpql = 'select c from Country c order by c.name asc'
-    em.createQuery(jpql, Country).getResultList()
+  def findCountries() {
+    persistence.findAll(Country, true, 'name')
   }
 
   List<Country> findAssociatedCountries() {
     def jpql = 'select distinct p.country from Province p order by p.country asc'
-    em.createQuery(jpql, Country).getResultList()
+    persistence.findAll(jpql, Country)
   }
 
   void saveCountry(Country country) {
-    em.merge(country)
+    Country c = persistence.findById(Country, country.acronym)
+    if (c) {
+      persistence.update(country)
+    } else {
+      persistence.save(country)
+    }
   }
 
   void removeCountry(String id) {
-    Country country = em.find(Country, id)
-    if (country) {
-      em.remove(country)
-    }
+    persistence.remove(Country, id)
   }
 }

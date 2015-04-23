@@ -60,7 +60,7 @@ public class LocationMBean implements Serializable {
     @Inject
     private CountryBean countryBean;
 
-    @EJB
+    @Inject
     private ProvinceBean provinceBean;
 
     @EJB
