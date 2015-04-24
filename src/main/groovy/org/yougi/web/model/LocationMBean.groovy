@@ -111,7 +111,7 @@ public class LocationMBean implements Serializable {
             Country country = new Country(selectedCountry);
             this.cities = cityBean.findByCountry(country, false);
         } else if (selectedProvince != null) {
-            Province province = new Province(selectedProvince);
+            Province province = new Province(id:selectedProvince);
             this.cities = cityBean.findByProvince(province, false);
         }
         return this.cities;
