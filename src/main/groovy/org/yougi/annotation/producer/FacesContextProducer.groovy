@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,19 +18,19 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.annotation.producer;
+package org.yougi.annotation.producer
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.RequestScoped
+import javax.enterprise.inject.Produces
+import javax.faces.context.FacesContext
 
 /**
  * @author Daniel Cunha - danielsoro@gmail.com
  */
-public class FacesContextProducer {
+class FacesContextProducer {
 
-    @Produces @RequestScoped
-    FacesContext getFacesContext() {
-        return FacesContext.getCurrentInstance();
-    }
+  @Produces @RequestScoped
+  FacesContext getFacesContext() {
+    FacesContext.currentInstance
+  }
 }
