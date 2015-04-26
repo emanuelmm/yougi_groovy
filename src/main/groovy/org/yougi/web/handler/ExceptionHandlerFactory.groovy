@@ -31,7 +31,7 @@ class ExceptionHandlerFactory extends javax.faces.context.ExceptionHandlerFactor
   }
 
   @Override
-  public ExceptionHandler getExceptionHandler() {
+  ExceptionHandler getExceptionHandler() {
     ExceptionHandler result = parent.getExceptionHandler()
     result = new CustomExceptionHandler(result)
     result
