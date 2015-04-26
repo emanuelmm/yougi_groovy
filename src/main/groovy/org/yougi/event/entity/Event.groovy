@@ -70,6 +70,25 @@ class Event implements Serializable, Identified, PublicContent {
   List<Venue> venues
 
   @Override
+  String getId() {
+    id
+  }
+
+  @Override
+  String getTitle() {
+    getName()
+  }
+
+  String getAuthor() {
+    null
+  }
+
+  @Override
+  String getContent() {
+    shortDescription
+  }
+
+  @Override
   String getSummary() {
     if(shortDescription) {
       return shortDescription
@@ -79,21 +98,12 @@ class Event implements Serializable, Identified, PublicContent {
   }
 
   @Override
-  String getContent() {
-    shortDescription
-  }
-
-  @Override
-  public String getUrl() {
+  String getUrl() {
     '/event/event'
-  }
-
-  String getAuthor() {
-    null
   }
 
   @Override
   String toString() {
-    (this.parent != null? this.parent.toString() + ' - ' : '') + this.name
+    (this.parent != null? parent.toString() + ' - ' : '') + this.name
   }
 }

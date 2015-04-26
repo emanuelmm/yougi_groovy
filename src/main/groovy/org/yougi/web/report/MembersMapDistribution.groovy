@@ -58,11 +58,9 @@ class MembersMapDistribution implements Serializable {
       if (city.latitude) {
         latitude = city.latitude as double
       }
-
-      if (city.longitude)) {
+      if (city.longitude) {
         longitude = city.longitude as double
       }
-
       if (latitude && longitude) {
         coord = new LatLng(latitude, longitude)
         simpleModel.addOverlay(new Marker(coord, city.name))
