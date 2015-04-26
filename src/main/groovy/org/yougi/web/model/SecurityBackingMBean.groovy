@@ -59,16 +59,14 @@ class SecurityBackingMBean {
 
   @Inject
   private FacesContext context
-
   @Inject
   private HttpServletRequest request
 
   boolean isUserSignedIn() {
-    return sessionMap.containsKey('signedUser')
+    sessionMap.containsKey('signedUser')
   }
 
   String login() {
-    println 'HAIL !!!'
     if(userAccountBean.thereIsNoAccount()) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundleHelper.getMessage('infoFirstUser'), ''))
       return '/registration'
@@ -104,26 +102,26 @@ class SecurityBackingMBean {
   }
 
   Boolean getIsUserAdministrator() {
-    return isUserInRole(Role.ADMIN)
+    isUserInRole(Role.ADMIN)
   }
 
   Boolean getIsUserLeader() {
-    return isUserInRole(Role.LEADER)
+    isUserInRole(Role.LEADER)
   }
 
   Boolean getIsUserHelper() {
-    return isUserInRole(Role.HELPER)
+    isUserInRole(Role.HELPER)
   }
 
   Boolean getIsUserPartner() {
-    return isUserInRole(Role.PARTNER)
+    isUserInRole(Role.PARTNER)
   }
 
   Boolean getIsUserSpeaker() {
-    return isUserInRole(Role.SPEAKER)
+    isUserInRole(Role.SPEAKER)
   }
 
   private Boolean isUserInRole(Role role) {
-    return request.isUserInRole(role.toString())
+    request.isUserInRole(role.toString())
   }
 }
