@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,44 +18,44 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.event.web.service;
+package org.yougi.event.web.service
 
-import org.yougi.event.business.EventBean;
-import org.yougi.event.entity.Event;
+import org.yougi.event.business.EventBean
+import org.yougi.event.entity.Event
 
-import javax.annotation.ManagedBean;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
+import javax.annotation.ManagedBean
+import javax.annotation.security.RolesAllowed
+import javax.ejb.EJB
+import javax.ws.rs.*
+import javax.ws.rs.core.Response
 
 /**
  * Represents a country covered by the Java User Group.
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
-@Path("events")
+@Path('events')
 @ManagedBean
-public class EventResource {
+class EventResource {
 
-    @EJB
-    private EventBean eventBean;
+  @EJB
+  EventBean eventBean
 
-    @GET
-    @RolesAllowed("member")
-    @Produces("application/xml")
-    public List<Event> getAll() {
-        return eventBean.findUpCommingEvents();
+  @GET
+  @RolesAllowed('member')
+  @Produces('application/xml')
+  List<Event> getAll() {
+    eventBean.findUpCommingEvents()
+  }
+
+  @GET
+  @Path('{id}')
+  @Produces('application/xml')
+  Event getEvent(@PathParam('id') String id) {
+    Event event = eventBean.find(id)
+    if(event == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND)
     }
-
-    @GET
-    @Path("{id}")
-    @Produces("application/xml")
-    public Event getEvent(@PathParam("id") String id) {
-        Event event = eventBean.find(id);
-        if(event == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-        return event;
-    }
+    event
+  }
 }
