@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -26,14 +26,12 @@ import org.yougi.business.UserAccountBean
 import org.yougi.entity.*
 import org.yougi.annotation.ManagedProperty
 
-import groovy.transform.CompileStatic;
-
 import javax.annotation.PostConstruct
 import javax.ejb.EJB
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
 import javax.inject.Named
-import javax.persistence.metamodel.StaticMetamodel;
+import javax.persistence.metamodel.StaticMetamodel
 
 
 /**
@@ -42,87 +40,80 @@ import javax.persistence.metamodel.StaticMetamodel;
 @Named
 @RequestScoped
 class CityMBean implements Serializable {
-	private static final long serialVersionUID = 1L
 
-	@EJB
-	CityBean cityBean
+  @EJB
+  CityBean cityBean
+  @EJB
+  TimezoneBean timezoneBean
+  @EJB
+  UserAccountBean userAccountBean
 
-	@EJB
-	TimezoneBean timezoneBean
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
 
-	@EJB
-	UserAccountBean userAccountBean
+  @Inject
+  LocationMBean locationMBean
 
-	@Inject
-	@ManagedProperty('#{param.id}')
-	String id
+  City city
 
-	@Inject
-	LocationMBean locationMBean
+  def cities
+  def timezones
 
-	City city
+  CityMBean() {
+    city = new City()
+  }
 
-	def cities
-	def timezones
+  def getCities() {
+    if(!cities) {
+      cities = cityBean.findAll()
+    }
+    cities
+  }
 
-	CityMBean() {
-		this.city = new City()
-	}
+  def getInhabitants() {
+    userAccountBean.findInhabitantsFrom(city)
+  }
 
-	def getCities() {
-		if(!this.cities) {
-			this.cities = cityBean.findAll()
-		}
-		this.cities
-	}
+  def getTimezones() {
+    if(!timezones) {
+      timezones = timezoneBean.findTimezones()
+    }
+    timezones
+  }
 
-	def getInhabitants() {
-		userAccountBean.findInhabitantsFrom(this.city)
-	}
+  @PostConstruct
+  void load() {
+    if (id) {
+      city = cityBean.find(id)
+      locationMBean.initialize()
+      if (city.country) {
+        locationMBean.setSelectedCountry(city.country.acronym)
+      }
 
-	def getTimezones() {
-		if(!this.timezones) {
-			this.timezones = timezoneBean.findTimezones()
-		}
-		this.timezones
-	}
+      if (city.province) {
+        locationMBean.setSelectedProvince(city.province.id)
+      }
+    }
+  }
 
-	@PostConstruct
-	void load() {
-		if (this.id) {
-			this.city = cityBean.find(id)
+  String save() {
+    Country country = locationMBean.getCountry()
+    if (country) {
+      city.country = country
+    }
 
-			locationMBean.initialize()
+    Province province = locationMBean.getProvince()
+    if (province) {
+      city.province = province
+    }
 
-			if (this.city.country) {
-				locationMBean.setSelectedCountry(this.city.country.acronym)
-			}
+    cityBean.save(city)
+    'cities?faces-redirect=true'
+  }
 
-			if (this.city.province) {
-				locationMBean.setSelectedProvince(this.city.province.id)
-			}
-		}
-	}
-
-	String save() {
-		Country country = this.locationMBean.getCountry()
-		if (country) {
-			this.city.country = country
-		}
-
-		Province province = this.locationMBean.getProvince()
-		if (province) {
-			this.city.province = province
-		}
-
-		cityBean.save(this.city)
-
-		'cities?faces-redirect=true'
-	}
-
-	String remove() {
-		cityBean.remove(city.id)
-
-		'cities?faces-redirect=true'
-	}
+  String remove() {
+    cityBean.remove(city.id)
+    'cities?faces-redirect=true'
+  }
 }
