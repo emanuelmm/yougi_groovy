@@ -24,7 +24,6 @@ import org.yougi.entity.Identified
 import org.yougi.entity.UserAccount
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Entity class representing an external website used as a source of content for

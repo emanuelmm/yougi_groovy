@@ -27,8 +27,6 @@ import org.yougi.knowledge.entity.WebSource;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

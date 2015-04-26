@@ -30,9 +30,6 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
  * This class is used to manage the selection of the venue and room of an event
  * session. The selected venue updates the list of rooms related with that venue.

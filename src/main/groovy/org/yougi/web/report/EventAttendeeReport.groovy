@@ -25,8 +25,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import org.yougi.event.entity.Attendee;
 
-import java.util.List;
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */

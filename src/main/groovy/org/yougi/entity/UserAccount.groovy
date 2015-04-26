@@ -24,8 +24,6 @@ import org.yougi.reference.DeactivationType
 import org.yougi.reference.Gender
 
 import javax.persistence.*
-import java.io.Serializable
-import java.util.UUID
 
 /**
  * Represents the user account.

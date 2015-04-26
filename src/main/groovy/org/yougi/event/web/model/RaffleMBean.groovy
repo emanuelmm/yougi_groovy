@@ -31,8 +31,6 @@ import javax.inject.Named;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Efraim Gentil - https://github.com/efraimgentil

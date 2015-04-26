@@ -23,9 +23,6 @@ package org.yougi.entity;
 import org.yougi.reference.JobFrequencyType;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

@@ -26,9 +26,6 @@ import de.bripkens.gravatar.Rating
 
 import javax.enterprise.context.RequestScoped
 import javax.inject.Named
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.UnknownHostException
 import java.util.logging.Level
 import java.util.logging.Logger
 

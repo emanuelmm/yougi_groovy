@@ -25,9 +25,6 @@ import org.yougi.entity.UserAccount
 
 import javax.persistence.*
 
-import java.io.Serializable
-import java.util.UUID
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */

@@ -26,8 +26,6 @@ import org.yougi.knowledge.entity.Topic;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.StringTokenizer;
 import javax.transaction.Transactional;
 
 /**

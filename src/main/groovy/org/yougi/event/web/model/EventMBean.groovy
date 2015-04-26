@@ -20,10 +20,6 @@
  * */
 package org.yougi.event.web.model;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;

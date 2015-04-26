@@ -30,7 +30,6 @@ import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
-import java.util.Iterator;
 
 public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 

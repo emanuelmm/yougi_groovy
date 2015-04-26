@@ -28,7 +28,6 @@ import javax.inject.Named;
 import javax.mail.BodyPart;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeMessage;
-import java.util.Calendar;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

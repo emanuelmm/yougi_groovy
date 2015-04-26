@@ -23,7 +23,6 @@ package org.yougi.event.entity
 import org.yougi.entity.Identified
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Associates a speaker to a sessionEvent.

@@ -26,7 +26,6 @@ import org.yougi.entity.Identified
 import org.yougi.entity.Province
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Venue is the place where an event is organized.

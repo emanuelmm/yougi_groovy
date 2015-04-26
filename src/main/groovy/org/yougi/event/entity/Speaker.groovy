@@ -24,7 +24,6 @@ import org.yougi.entity.Identified
 import org.yougi.entity.UserAccount
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Person with knowledge and experience to give a speech in an event, respecting

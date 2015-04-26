@@ -23,7 +23,6 @@ package org.yougi.knowledge.entity
 import org.yougi.entity.Identified
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

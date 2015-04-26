@@ -25,9 +25,7 @@ import org.yougi.util.PackageResourceHelper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.*;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

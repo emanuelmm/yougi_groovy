@@ -26,15 +26,6 @@ import org.jboss.vfs.VirtualFile;
 import org.yougi.business.JobSchedulerBean;
 import org.yougi.exception.EnvironmentResourceException;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 /**

@@ -25,7 +25,6 @@ import org.yougi.entity.PublicContent
 
 import javax.persistence.*
 import javax.xml.bind.annotation.XmlRootElement
-import java.io.Serializable
 
 /**
  * Entity class representing an extracted article from a web source, making it

@@ -23,7 +23,6 @@ package org.yougi.entity
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
-import java.io.Serializable
 
 /**
  * Represents a country covered by the Java User Group.

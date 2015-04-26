@@ -22,8 +22,6 @@ package org.yougi.util;
 
 import org.yougi.entity.Identified;
 
-import java.util.UUID;
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */

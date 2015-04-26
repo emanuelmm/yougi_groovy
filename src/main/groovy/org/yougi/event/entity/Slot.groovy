@@ -23,7 +23,6 @@ package org.yougi.event.entity
 import org.yougi.entity.Identified
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Enforce the size of sessions within a event. If an event has slots it means

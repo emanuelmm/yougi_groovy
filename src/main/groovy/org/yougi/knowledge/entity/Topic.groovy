@@ -25,7 +25,6 @@ import org.yougi.exception.BusinessLogicException
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
-import java.io.Serializable
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

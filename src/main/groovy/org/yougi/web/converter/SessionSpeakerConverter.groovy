@@ -27,7 +27,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import java.util.List;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

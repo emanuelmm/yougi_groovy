@@ -21,10 +21,6 @@
 package org.yougi.entity;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

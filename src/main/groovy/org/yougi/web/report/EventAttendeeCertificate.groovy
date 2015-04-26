@@ -25,8 +25,6 @@ import com.itextpdf.text.pdf.*;
 import org.yougi.event.entity.Attendee;
 import org.yougi.util.DateTimeUtils;
 
-import java.io.IOException;
-
 /**
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com

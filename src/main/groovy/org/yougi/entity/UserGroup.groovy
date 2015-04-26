@@ -21,7 +21,6 @@
 package org.yougi.entity
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Represents the allocation of users in groups.

@@ -35,8 +35,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.persistence.metamodel.StaticMetamodel;
 
-import java.io.Serializable
-import java.util.List
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

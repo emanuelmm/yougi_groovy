@@ -29,7 +29,6 @@ import org.yougi.entity.UserAccount;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import java.io.Serializable;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

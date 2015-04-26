@@ -25,7 +25,6 @@ import org.yougi.entity.PublicContent
 
 import javax.persistence.*
 import javax.xml.bind.annotation.XmlRootElement
-import java.io.Serializable
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

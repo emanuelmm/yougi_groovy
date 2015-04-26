@@ -23,7 +23,6 @@ package org.yougi.entity
 import org.yougi.reference.JobStatus
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

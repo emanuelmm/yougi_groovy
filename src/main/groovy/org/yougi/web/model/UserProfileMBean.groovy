@@ -35,9 +35,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

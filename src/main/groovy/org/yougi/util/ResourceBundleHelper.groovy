@@ -22,9 +22,6 @@ package org.yougi.util;
 
 import javax.faces.context.FacesContext;
 import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

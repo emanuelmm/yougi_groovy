@@ -21,8 +21,6 @@
 package org.yougi.entity
 
 import javax.persistence.*
-import java.io.Serializable
-import java.util.Calendar
 
 /**
  * Represents the user session.

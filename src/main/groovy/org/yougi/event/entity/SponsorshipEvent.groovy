@@ -24,8 +24,6 @@ import org.yougi.entity.Identified
 import org.yougi.partnership.entity.Partner
 
 import javax.persistence.*
-import java.io.Serializable
-import java.math.BigDecimal
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

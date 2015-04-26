@@ -20,9 +20,6 @@
  * */
 package org.yougi.event.web.model;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;

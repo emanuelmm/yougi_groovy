@@ -23,8 +23,6 @@ package org.yougi.entity
 import org.yougi.util.Base64Encoder
 
 import javax.persistence.*
-import java.io.Serializable
-import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 

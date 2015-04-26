@@ -30,9 +30,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * This class feeds the bar chart that shows the growth of the user group in a

@@ -25,7 +25,6 @@ import org.yougi.entity.Identified
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
-import java.io.Serializable
 
 /**
  * An entity class that represents a mailing list of the user group.
