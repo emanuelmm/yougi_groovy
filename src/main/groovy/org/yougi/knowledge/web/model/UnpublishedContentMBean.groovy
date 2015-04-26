@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,77 +18,74 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.knowledge.web.model;
+package org.yougi.knowledge.web.model
 
-import org.yougi.knowledge.business.WebSourceBean;
-import org.yougi.knowledge.entity.Article;
-import org.yougi.knowledge.entity.WebSource;
+import org.yougi.knowledge.business.WebSourceBean
+import org.yougi.knowledge.entity.Article
+import org.yougi.knowledge.entity.WebSource
 
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.ejb.EJB
+import javax.enterprise.context.SessionScoped
+import javax.inject.Named
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @SessionScoped
-public class UnpublishedContentMBean implements Serializable {
+class UnpublishedContentMBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  WebSource webSource
 
-    private WebSource webSource;
+  @EJB
+  private WebSourceBean webSourceBean
 
-    @EJB
-    private WebSourceBean webSourceBean;
+  WebSource getWebSource() {
+    webSource
+  }
 
-    public WebSource getWebSource() {
-        return webSource;
+  void setWebSource(WebSource webSource) {
+    if(webSource == null || !webSource.equals(webSource)) {
+      reset()
+    }
+    webSource = webSource
+  }
+
+  void reset() {
+    webSource = null
+  }
+
+  List<Article> getArticles() {
+    webSource.getArticles()
+  }
+
+  Article getArticle(String permanentLink) {
+    List<Article> articles = webSource.getArticles()
+    if(articles == null || permanentLink == null) {
+      return null
     }
 
-    public void setWebSource(WebSource webSource) {
-        if(this.webSource == null || !this.webSource.equals(webSource)) {
-            reset();
-        }
-        this.webSource = webSource;
+    Article article = new Article(null, permanentLink)
+    for(Article art: articles) {
+      if(art.equals(article)) {
+        article = art
+          break
+      }
     }
+    article
+  }
 
-    public void reset() {
-        this.webSource  = null;
-    }
+  void loadWebSource() {
+    webSource = webSourceBean.loadWebSource(webSource)
+  }
 
-    public List<Article> getArticles() {
-        return this.webSource.getArticles();
-    }
+  void addArticle(Article article) {
+    article.setId(null)
+    article.setPublished(Boolean.FALSE)
+    webSource.addArticle(article)
+  }
 
-    public Article getArticle(String permanentLink) {
-        List<Article> articles = this.webSource.getArticles();
-        if(articles == null || permanentLink == null) {
-            return null;
-        }
-
-        Article article = new Article(null, permanentLink);
-        for(Article art: articles) {
-            if(art.equals(article)) {
-                article = art;
-                break;
-            }
-        }
-
-        return article;
-    }
-
-    public void loadWebSource() {
-        this.webSource = webSourceBean.loadWebSource(this.webSource);
-    }
-
-    public void addArticle(Article article) {
-        article.setId(null);
-        article.setPublished(Boolean.FALSE);
-        this.webSource.addArticle(article);
-    }
-
-    public void removeArticle(Article article) {
-        this.webSource.removeArticle(article);
-    }
+  void removeArticle(Article article) {
+    webSource.removeArticle(article)
+  }
 }
