@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest
  */
 @Named
 @RequestScoped
-public class ApplicationPropertiesMBean implements Serializable {
+class ApplicationPropertiesMBean implements Serializable {
 
   @EJB
   private ApplicationPropertyBean applicationPropertyBean
