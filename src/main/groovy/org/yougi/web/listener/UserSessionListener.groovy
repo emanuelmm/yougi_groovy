@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,52 +18,51 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.web.listener;
+package org.yougi.web.listener
 
-import org.yougi.business.UserSessionBean;
-import org.yougi.entity.UserSession;
+import org.yougi.business.UserSessionBean
+import org.yougi.entity.UserSession
 
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.ejb.EJB
+import javax.inject.Inject
+import javax.servlet.annotation.WebListener
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+import javax.servlet.http.HttpSessionEvent
+import javax.servlet.http.HttpSessionListener
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @WebListener
-public class UserSessionListener implements HttpSessionListener {
+class UserSessionListener implements HttpSessionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(UserSessionListener.class.getSimpleName());
+  private static final Logger LOGGER = Logger.getLogger(UserSessionListener.class.getSimpleName())
 
-    @EJB
-    private UserSessionBean userSessionBean;
+  @EJB
+  private UserSessionBean userSessionBean
+  @Inject
+  private HttpServletRequest request
 
-    @Inject
-    private HttpServletRequest request;
+  @Override
+  void sessionCreated(HttpSessionEvent httpSessionEvent) {
+    HttpSession session = httpSessionEvent.getSession()
+    LOGGER.log(Level.INFO, 'Session id:' + session.getId())
 
-    @Override
-    public void sessionCreated(HttpSessionEvent httpSessionEvent) {
-        HttpSession session = httpSessionEvent.getSession();
-        LOGGER.log(Level.INFO, "Session id:" + session.getId());
+    UserSession userSession = new UserSession()
+    userSession.setSessionId(session.getId())
+    userSession.setIpAddress(request.getRemoteAddr())
+    userSession.setStart(Calendar.getInstance().getTime())
+    userSessionBean.save(userSession)
+  }
 
-        UserSession userSession = new UserSession();
-        userSession.setSessionId(session.getId());
-        userSession.setIpAddress(request.getRemoteAddr());
-        userSession.setStart(Calendar.getInstance().getTime());
-        userSessionBean.save(userSession);
-    }
-
-    @Override
-    public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
-        HttpSession session = httpSessionEvent.getSession();
-        UserSession userSession = userSessionBean.findBySessionId(session.getId());
-        userSession.setEnd(Calendar.getInstance().getTime());
-        userSessionBean.save(userSession);
-    }
+  @Override
+  void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+    HttpSession session = httpSessionEvent.getSession()
+    UserSession userSession = userSessionBean.findBySessionId(session.getId())
+    userSession.setEnd(Calendar.getInstance().getTime())
+    userSessionBean.save(userSession)
+  }
 }
