@@ -42,107 +42,107 @@ import org.yougi.util.UrlUtils
 @RequestScoped
 class WebSourceMBean {
 
-	@EJB
-	UserAccountBean userAccountBean
-	@EJB
-	WebSourceBean webSourceBean
-	@EJB
-	ArticleBean articleBean
-	WebSource webSource
-	def webSources
-	def publishedArticles
-	def membersWithWebsite
-	String selectedMember
-	String website
-	@Inject
-	@ManagedProperty('#{param.id}')
-	String id
+  @EJB
+  UserAccountBean userAccountBean
+  @EJB
+  WebSourceBean webSourceBean
+  @EJB
+  ArticleBean articleBean
+  WebSource webSource
+  def webSources
+  def publishedArticles
+  def membersWithWebsite
+  String selectedMember
+  String website
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
 
-	@Inject
-	UnpublishedArticlesMBean unpublishedArticlesMBean
+  @Inject
+  UnpublishedArticlesMBean unpublishedArticlesMBean
 
-	List<WebSource> getWebSources() {
-		if(this.webSources == null) {
-			this.webSources = webSourceBean.findWebResources()
-		}
-		this.webSources
-	}
+  List<WebSource> getWebSources() {
+    if(webSources == null) {
+      webSources = webSourceBean.findWebResources()
+    }
+    webSources
+  }
 
-	List<UserAccount> getMembersWithWebsite() {
-		if(this.membersWithWebsite == null) {
-			this.membersWithWebsite = webSourceBean.findNonReferencedProviders()
-		}
-		this.membersWithWebsite
-	}
+  List<UserAccount> getMembersWithWebsite() {
+    if(membersWithWebsite == null) {
+      membersWithWebsite = webSourceBean.findNonReferencedProviders()
+    }
+    membersWithWebsite
+  }
 
-	String getWebsite() {
-		if(this.selectedMember && this.website == null) {
-			this.webSource.provider = userAccountBean.find(this.selectedMember)
-			this.website = this.webSource.provider.website
-			this.website = UrlUtils.setProtocol(this.website)
-		}
-		this.website
-	}
+  String getWebsite() {
+    if(selectedMember && website == null) {
+      webSource.provider = userAccountBean.find(selectedMember)
+      website = webSource.provider.website
+      website = UrlUtils.setProtocol(website)
+    }
+    website
+  }
 
-	String getTitle() {
-		if(this.selectedMember && this.webSource.title == null) {
-			this.webSource = webSourceBean.loadWebSource(this.webSource)
-		}
-		this.webSource.title
-	}
+  String getTitle() {
+    if(selectedMember && webSource.title == null) {
+      webSource = webSourceBean.loadWebSource(webSource)
+    }
+    webSource.title
+  }
 
-	String getFeed() {
-		if(this.selectedMember && this.webSource.feed == null) {
-			this.webSource = webSourceBean.loadWebSource(this.webSource)
-		}
-		this.webSource.feed
-	}
+  String getFeed() {
+    if(selectedMember && webSource.feed == null) {
+      webSource = webSourceBean.loadWebSource(webSource)
+    }
+    webSource.feed
+  }
 
-	void updateWebSource() {
-		this.webSource = webSourceBean.loadWebSource(this.website)
-		UserAccount userAccount = userAccountBean.findByWebsite(this.website)
-		if(userAccount) {
-			this.selectedMember = userAccount.id
-		}
-	}
+  void updateWebSource() {
+    webSource = webSourceBean.loadWebSource(website)
+    UserAccount userAccount = userAccountBean.findByWebsite(website)
+    if(userAccount) {
+      selectedMember = userAccount.id
+    }
+  }
 
-	List<Article> getPublishedArticles() {
-		if(publishedArticles == null) {
-			this.publishedArticles = articleBean.findPublishedArticles(this.webSource)
-		}
-		this.publishedArticles
-	}
+  List<Article> getPublishedArticles() {
+    if(publishedArticles == null) {
+      publishedArticles = articleBean.findPublishedArticles(webSource)
+    }
+    publishedArticles
+  }
 
-	List<Article> getUnpublishedArticles() {
-		if(unpublishedArticlesMBean.unpublishedArticles == null) {
-			unpublishedArticlesMBean.unpublishedArticles = webSourceBean.loadUnpublishedArticles(this.webSource)
-		}
-		this.unpublishedArticlesMBean.unpublishedArticles
-	}
+  List<Article> getUnpublishedArticles() {
+    if(unpublishedArticlesMBean.unpublishedArticles == null) {
+      unpublishedArticlesMBean.unpublishedArticles = webSourceBean.loadUnpublishedArticles(webSource)
+    }
+    unpublishedArticlesMBean.unpublishedArticles
+  }
 
-	@PostConstruct
-	void load() {
-		if(this.id) {
-			this.webSource = webSourceBean.find(this.id)
-			if(this.webSource.provider) {
-				this.selectedMember = this.webSource.provider.id
-			}
-			unpublishedArticlesMBean.webSource = this.webSource
-		} else {
-			this.webSource = new WebSource()
-		}
-	}
+  @PostConstruct
+  void load() {
+    if(id) {
+      webSource = webSourceBean.find(id)
+      if(webSource.provider) {
+        selectedMember = webSource.provider.id
+      }
+      unpublishedArticlesMBean.webSource = webSource
+    } else {
+      webSource = new WebSource()
+    }
+  }
 
-	String save() {
-		if(this.selectedMember) {
-			this.webSource.provider = userAccountBean.find(this.selectedMember)
-		}
-		webSourceBean.save(this.webSource)
-		"web_sources"
-	}
+  String save() {
+    if(selectedMember) {
+      webSource.provider = userAccountBean.find(selectedMember)
+    }
+    webSourceBean.save(webSource)
+    'web_sources'
+  }
 
-	String remove() {
-		webSourceBean.remove(this.webSource.id)
-		"web_sources?faces-redirect=true"
-	}
+  String remove() {
+    webSourceBean.remove(webSource.id)
+    'web_sources?faces-redirect=true'
+  }
 }
