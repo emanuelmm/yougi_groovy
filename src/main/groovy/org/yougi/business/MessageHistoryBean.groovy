@@ -31,19 +31,10 @@ import javax.persistence.PersistenceContext
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Stateless
-class MessageHistoryBean extends AbstractBean<MessageHistory> {
+class MessageHistoryBean {
 
   @PersistenceContext
   private EntityManager em
-
-  MessageHistoryBean() {
-    super(MessageHistory)
-  }
-
-  @Override
-  protected EntityManager getEntityManager() {
-    em
-  }
 
   List<MessageHistory> findByRecipient(UserAccount recipient) {
     em.createQuery('select hm from MessageHistory hm where hm.recipient = :userAccount order by hm.dateSent desc', MessageHistory)
