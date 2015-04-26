@@ -71,6 +71,14 @@ class GenericPersistence implements Serializable {
     em.createQuery(cq).getResultList()
   }
 
+  public <T> T findWithParam(String jpql, Object param, Class<T> klass) throws Exception {
+    try {
+      return em.createQuery(jpql, klass).setParameter(1, param).getSingleResult()
+    } catch (NoResultException e) {
+      return null
+    }
+  }
+
   public <T> List<T> findAllWithParam(String jpql, Object param, Class<T> klass) {
     em.createQuery(jpql, klass).setParameter(1, param).getResultList()
   }
