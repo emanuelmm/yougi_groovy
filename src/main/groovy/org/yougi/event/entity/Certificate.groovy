@@ -20,7 +20,6 @@
  * */
 package org.yougi.event.entity
 
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */

@@ -71,7 +71,6 @@ public class JobSchedulerDaily extends JobScheduler {
             }
         }
 
-
         if(this.getEndDate() != null) {
             Calendar endDate = Calendar.getInstance();
             endDate.setTime(this.getEndDate());

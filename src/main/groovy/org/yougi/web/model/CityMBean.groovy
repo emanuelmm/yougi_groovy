@@ -33,7 +33,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.persistence.metamodel.StaticMetamodel
 
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
