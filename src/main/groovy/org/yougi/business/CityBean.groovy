@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,73 +18,72 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.business;
+package org.yougi.business
 
-import org.yougi.entity.City;
-import org.yougi.entity.Country;
-import org.yougi.entity.Province;
+import org.yougi.entity.City
+import org.yougi.entity.Country
+import org.yougi.entity.Province
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.ejb.Stateless
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 /**
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Stateless
-public class CityBean extends AbstractBean<City> {
+class CityBean extends AbstractBean<City> {
 
-    @PersistenceContext
-    private EntityManager em;
+  @PersistenceContext
+  private EntityManager em
 
-    public CityBean() {
-        super(City.class);
+  CityBean() {
+    super(City)
+  }
+
+  @Override
+  protected EntityManager getEntityManager() {
+    em
+  }
+
+  List<City> findAll() {
+    em.createQuery('select c from City c order by c.country.name, c.name asc',City).getResultList()
+  }
+
+  List<City> findValidatedCities() {
+    em.createQuery('select c from City c where c.valid = :valid', City)
+      .setParameter('valid', true)
+      .getResultList()
+  }
+
+  List<City> findByCountry(Country country, Boolean includingInvalids) {
+    if(includingInvalids) {
+      return em.createQuery('select c from City c where c.country = :country order by c.name asc', City)
+        .setParameter('country', country)
+        .getResultList()
+    } else {
+      return em.createQuery('select c from City c where c.country = :country and c.valid = :valid order by c.name asc', City)
+        .setParameter('country', country)
+        .setParameter('valid', Boolean.TRUE)
+        .getResultList()
     }
+  }
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+  List<City> findByProvince(Province province, Boolean includingInvalids) {
+    if(includingInvalids) {
+      return em.createQuery('select c from City c where c.province = :province order by c.name asc', City)
+        .setParameter('province', province)
+        .getResultList()
+    } else {
+      return em.createQuery('select c from City c where c.province = :province and c.valid = :valid order by c.name asc', City)
+        .setParameter('province', province)
+        .setParameter('valid', Boolean.TRUE)
+        .getResultList()
     }
+  }
 
-    public List<City> findAll() {
-        return em.createQuery("select c from City c order by c.country.name, c.name asc",City.class)
-                 .getResultList();
-    }
-
-    public List<City> findValidatedCities() {
-        return em.createQuery("select c from City c where c.valid = :valid", City.class)
-                 .setParameter("valid", true)
-                 .getResultList();
-    }
-
-    public List<City> findByCountry(Country country, Boolean includingInvalids) {
-        if(includingInvalids) {
-            return em.createQuery("select c from City c where c.country = :country order by c.name asc", City.class)
-                 .setParameter("country", country)
-                 .getResultList();
-        } else {
-            return em.createQuery("select c from City c where c.country = :country and c.valid = :valid order by c.name asc", City.class)
-                 .setParameter("country", country)
-                 .setParameter("valid", Boolean.TRUE)
-                 .getResultList();
-        }
-    }
-
-    public List<City> findByProvince(Province province, Boolean includingInvalids) {
-        if(includingInvalids) {
-            return em.createQuery("select c from City c where c.province = :province order by c.name asc", City.class)
-                 .setParameter("province", province)
-                 .getResultList();
-        } else {
-            return em.createQuery("select c from City c where c.province = :province and c.valid = :valid order by c.name asc", City.class)
-                 .setParameter("province", province)
-                 .setParameter("valid", Boolean.TRUE)
-                 .getResultList();
-        }
-    }
-
-    public List<City> findStartingWith(String initials) {
-        return em.createQuery("select c from City c where c.name like '"+ initials +"%' order by c.name", City.class).getResultList();
-    }
+  List<City> findStartingWith(String initials) {
+    em.createQuery('select c from City c where c.name like '+ initials +'\'%\' order by c.name', City).getResultList()
+  }
 }

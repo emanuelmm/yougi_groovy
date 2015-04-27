@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,42 +18,42 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.business;
+package org.yougi.business
 
-import org.yougi.entity.*;
+import org.yougi.entity.*
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.ejb.Stateless
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 /**
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Stateless
-public class CommunityMemberBean extends AbstractBean<CommunityMember> {
+class CommunityMemberBean extends AbstractBean<CommunityMember> {
 
-    @PersistenceContext
-    private EntityManager em;
+  @PersistenceContext
+  private EntityManager em
 
-    public CommunityMemberBean() {
-        super(CommunityMember.class);
-    }
+  CommunityMemberBean() {
+    super(CommunityMember)
+  }
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
+  @Override
+  protected EntityManager getEntityManager() {
+    em
+  }
 
-    public List<CommunityMember> findBy(Community community) {
-        return em.createQuery("select cm from CommunityMember cm where cm.community.id = :community", CommunityMember.class)
-                 .setParameter("community", community.getId())
-                 .getResultList();
-    }
+  List<CommunityMember> findBy(Community community) {
+    em.createQuery('select cm from CommunityMember cm where cm.community.id = :community', CommunityMember)
+      .setParameter('community', community.getId())
+      .getResultList()
+  }
 
-    public List<CommunityMember> findBy(UserAccount member) {
-        return em.createQuery("select cm from CommunityMember cm where cm.member.id = :member", CommunityMember.class)
-                .setParameter("member", member.getId())
-                .getResultList();
-    }
+  List<CommunityMember> findBy(UserAccount member) {
+    em.createQuery('select cm from CommunityMember cm where cm.member.id = :member', CommunityMember)
+      .setParameter('member', member.getId())
+      .getResultList()
+  }
 }

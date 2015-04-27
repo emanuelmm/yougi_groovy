@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,125 +18,123 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.business;
+package org.yougi.business
 
-import org.yougi.entity.Authentication;
-import org.yougi.entity.UserAccount;
-import org.yougi.exception.BusinessLogicException;
+import org.yougi.entity.Authentication
+import org.yougi.entity.UserAccount
+import org.yougi.exception.BusinessLogicException
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.ejb.Stateless
+import javax.persistence.EntityManager
+import javax.persistence.NoResultException
+import javax.persistence.PersistenceContext
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  *
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Stateless
-public class AuthenticationBean {
+class AuthenticationBean {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthenticationBean.class.getSimpleName());
+  private static final Logger LOGGER = Logger.getLogger(AuthenticationBean.class.getSimpleName())
 
-    @PersistenceContext
-    private EntityManager em;
+  @PersistenceContext
+  private EntityManager em
 
-    /**
-     * @param userAccount the user who has authentication credentials registered.
-     * @return the user's authentication data.
-     */
-    public Authentication findByUserAccount(UserAccount userAccount) {
-        try {
-            return em.createQuery("select a from Authentication a where a.userAccount = :userAccount", Authentication.class)
-                                      .setParameter("userAccount", userAccount)
-                                      .getSingleResult();
-        } catch(NoResultException nre) {
-            LOGGER.log(Level.INFO, nre.getMessage());
-            return null;
-        }
+  /**
+   * @param userAccount the user who has authentication credentials registered.
+   * @return the user's authentication data.
+   */
+  Authentication findByUserAccount(UserAccount userAccount) {
+    try {
+      return em.createQuery('select a from Authentication a where a.userAccount = :userAccount', Authentication)
+        .setParameter('userAccount', userAccount)
+        .getSingleResult()
+    } catch(NoResultException nre) {
+      LOGGER.log(Level.INFO, nre.getMessage())
+      return null
     }
+  }
 
-    /**
-     * @param userAccount the id of the user who has authentication credentials registered.
-     * @return the user's authentication data.
-     */
-    public Authentication findByUserId(String userAccount) {
-        try {
-            return em.createQuery("select a from Authentication a where a.userAccount.id = :userAccount", Authentication.class)
-                                   .setParameter("userAccount", userAccount)
-                                   .getSingleResult();
-        } catch(NoResultException nre) {
-            LOGGER.log(Level.INFO, nre.getMessage());
-            return null;
-        }
+  /**
+   * @param userAccount the id of the user who has authentication credentials registered.
+   * @return the user's authentication data.
+   */
+  Authentication findByUserId(String userAccount) {
+    try {
+      return em.createQuery('select a from Authentication a where a.userAccount.id = :userAccount', Authentication)
+        .setParameter('userAccount', userAccount)
+        .getSingleResult()
+    } catch(NoResultException nre) {
+      LOGGER.log(Level.INFO, nre.getMessage())
+      return null
     }
+  }
 
-    /**
-     * Compares the informed password with the one stored in the database.
-     * @param userAccount the user account that has authentication credentials.
-     * @param passwordToCheck the password to be compared with the one in the database.
-     * @return true if the password matches.
-     */
-    public Boolean passwordMatches(UserAccount userAccount, String passwordToCheck) {
-        try {
-            Authentication authentication = new Authentication();
-            authentication = em.createQuery("select a from Authentication a where a.userAccount = :userAccount and a.password = :password", Authentication.class)
-                                                .setParameter("userAccount", userAccount)
-                                                .setParameter("password", authentication.hashPassword(passwordToCheck))
-                                                .getSingleResult();
-            if(authentication != null) {
-                return Boolean.TRUE;
-            }
-        } catch(NoResultException nre) {
-            LOGGER.log(Level.INFO, nre.getMessage());
-            return Boolean.FALSE;
-        }
-
-        return Boolean.FALSE;
+  /**
+   * Compares the informed password with the one stored in the database.
+   * @param userAccount the user account that has authentication credentials.
+   * @param passwordToCheck the password to be compared with the one in the database.
+   * @return true if the password matches.
+   */
+  Boolean passwordMatches(UserAccount userAccount, String passwordToCheck) {
+    try {
+      Authentication authentication = new Authentication()
+      authentication = em.createQuery('select a from Authentication a where a.userAccount = :userAccount and a.password = :password', Authentication)
+        .setParameter('userAccount', userAccount)
+        .setParameter('password', authentication.hashPassword(passwordToCheck))
+        .getSingleResult()
+      if(authentication != null) {
+        return Boolean.TRUE
+      }
+    } catch(NoResultException nre) {
+      LOGGER.log(Level.INFO, nre.getMessage())
+      return Boolean.FALSE
     }
+    Boolean.FALSE
+  }
 
-    /**
-     * @param userAccount account of the user who wants to change his password.
-     * @param newPassword the new password of the user.
-     * @throws org.yougi.exception.BusinessLogicException
-     */
-    public void changePassword(UserAccount userAccount, String newPassword) throws BusinessLogicException {
-        try {
-            // Retrieve the user authentication where the password is saved.
-            Authentication authentication = em.createQuery("select a from Authentication a where a.userAccount = :userAccount", Authentication.class)
-                                            .setParameter("userAccount", userAccount)
-                                            .getSingleResult();
-            if(authentication != null) {
-                authentication.setPassword(newPassword);
-            }
-        } catch(NoResultException nre) {
-            throw new BusinessLogicException("User account not found. It is not possible to change the password.", nre);
-        }
+  /**
+   * @param userAccount account of the user who wants to change his password.
+   * @param newPassword the new password of the user.
+   * @throws org.yougi.exception.BusinessLogicException
+   */
+  void changePassword(UserAccount userAccount, String newPassword) throws BusinessLogicException {
+    try {
+      // Retrieve the user authentication where the password is saved.
+      Authentication authentication = em.createQuery('select a from Authentication a where a.userAccount = :userAccount', Authentication)
+        .setParameter('userAccount', userAccount)
+        .getSingleResult()
+      if(authentication != null) {
+        authentication.setPassword(newPassword)
+      }
+    } catch(NoResultException nre) {
+      throw new BusinessLogicException('User account not found. It is not possible to change the password.', nre)
     }
+  }
 
-    public void save(Authentication authentication) {
-        Authentication existingAuthentication = findByUserAccount(authentication.getUserAccount());
-        if(existingAuthentication == null) {
-            em.persist(authentication);
-        } else {
-            em.merge(authentication);
-        }
+  void save(Authentication authentication) {
+    Authentication existingAuthentication = findByUserAccount(authentication.getUserAccount())
+    if(existingAuthentication == null) {
+      em.persist(authentication)
+    } else {
+      em.merge(authentication)
     }
+  }
 
-    public void remove(UserAccount userAccount) {
-        em.createQuery("delete from Authentication a where a.userAccount = :userAccount")
-                .setParameter("userAccount", userAccount)
-                .executeUpdate();
-    }
+  void remove(UserAccount userAccount) {
+    em.createQuery('delete from Authentication a where a.userAccount = :userAccount')
+      .setParameter('userAccount', userAccount)
+      .executeUpdate()
+  }
 
-    public void changeUsername(UserAccount userAccount) {
-        Authentication existingAuthentication = findByUserAccount(userAccount);
-
-        remove(userAccount);
-        em.detach(existingAuthentication);
-        existingAuthentication.setUsername(userAccount.getEmail());
-        em.persist(existingAuthentication);
-    }
+  void changeUsername(UserAccount userAccount) {
+    Authentication existingAuthentication = findByUserAccount(userAccount)
+    remove(userAccount)
+    em.detach(existingAuthentication)
+    existingAuthentication.setUsername(userAccount.getEmail())
+    em.persist(existingAuthentication)
+  }
 }
