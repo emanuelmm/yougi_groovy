@@ -18,15 +18,17 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.event.business;
+package org.yougi.event.business
 
-import org.yougi.business.AbstractBean;
-import org.yougi.event.entity.Event;
-import org.yougi.event.entity.Venue;
+import groovy.transform.CompileStatic;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.yougi.business.AbstractBean
+import org.yougi.event.entity.Event
+import org.yougi.event.entity.Venue
+
+import javax.ejb.Stateless
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 /**
  * Manages venues.
@@ -34,38 +36,38 @@ import javax.persistence.PersistenceContext;
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Stateless
-public class VenueBean extends AbstractBean<Venue> {
+class VenueBean extends AbstractBean<Venue> {
 
     @PersistenceContext
-    private EntityManager em;
+    EntityManager em
 
-    public VenueBean() {
-        super(Venue.class);
+    VenueBean() {
+        super(Venue)
     }
 
     @Override
     protected EntityManager getEntityManager() {
-        return em;
+        em
     }
 
-    public List<Venue> findVenues() {
-    	return em.createQuery("select v from Venue v order by v.name asc", Venue.class)
-                 .getResultList();
+    def findVenues() {
+    	return em.createQuery('select v from Venue v order by v.name asc', Venue)
+                 .getResultList()
     }
 
-    public List<Venue> findEventVenues(Event event) {
+    def findEventVenues(Event event) {
         if(event == null) {
-            return new ArrayList<>();
+            new ArrayList<>()
         }
 
-        List<Venue> venues = em.createQuery("select ev.venue from EventVenue ev where ev.event = :event", Venue.class)
-                               .setParameter("event", event)
-                               .getResultList();
+        def venues = em.createQuery('select ev.venue from EventVenue ev where ev.event = :event', Venue)
+                               .setParameter('event', event)
+                               .getResultList()
 
-        if((venues == null || venues.isEmpty()) && event.getParent() != null) {
-            venues = findEventVenues(event.getParent());
+        if((!venues) && event.parent != null) {
+            venues = findEventVenues(event.parent)
         }
 
-        return venues;
+        venues
     }
 }
