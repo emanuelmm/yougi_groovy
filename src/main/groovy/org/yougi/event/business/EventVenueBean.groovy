@@ -28,7 +28,6 @@ import org.yougi.event.entity.Venue;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 /**
  * Manages the allocation of events in venues.

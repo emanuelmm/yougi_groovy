@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,172 +18,110 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.event.web.model;
+package org.yougi.event.web.model
 
-import org.yougi.event.business.EventBean;
-import org.yougi.event.business.SponsorshipEventBean;
-import org.yougi.event.entity.Event;
-import org.yougi.event.entity.SponsorshipEvent;
-import org.yougi.partnership.business.PartnerBean;
-import org.yougi.partnership.entity.Partner;
-import org.yougi.annotation.ManagedProperty;
+import org.yougi.event.business.EventBean
+import org.yougi.event.business.SponsorshipEventBean
+import org.yougi.event.entity.Event
+import org.yougi.event.entity.SponsorshipEvent
+import org.yougi.partnership.business.PartnerBean
+import org.yougi.partnership.entity.Partner
+import org.yougi.annotation.ManagedProperty
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.List;
+import javax.annotation.PostConstruct
+import javax.ejb.EJB
+import javax.enterprise.context.RequestScoped
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-public class SponsorshipEventMBean implements Serializable {
+class SponsorshipEventMBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  @EJB
+  private SponsorshipEventBean sponsorshipEventBean
+  @EJB
+  private EventBean eventBean
+  @EJB
+  private PartnerBean partnerBean
 
-    @EJB
-    private SponsorshipEventBean sponsorshipEventBean;
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
 
-    @EJB
-    private EventBean eventBean;
+  @Inject
+  @ManagedProperty('#{param.eventId}')
+  String eventId
 
-    @EJB
-    private PartnerBean partnerBean;
+  Event event
+  SponsorshipEvent sponsorshipEvent
+  List<SponsorshipEvent> sponsorshipsEvent
+  List<Event> events
+  List<Partner> partners
 
-    @Inject
-    @ManagedProperty("#{param.id}")
-    private String id;
+  String selectedEvent
+  String selectedPartner
 
-    @Inject
-    @ManagedProperty("#{param.eventId}")
-    private String eventId;
+  List<SponsorshipEvent> getSponsorshipsEvent() {
+    if (sponsorshipsEvent == null) {
+      sponsorshipsEvent = sponsorshipEventBean.findSponsorshipsEvent(event)
+    }
+    sponsorshipsEvent
+  }
 
-    private Event event;
+  BigDecimal getSumAmounts() {
+    BigDecimal sum = BigDecimal.ZERO
+    List<SponsorshipEvent> es = getSponsorshipsEvent()
+    for(SponsorshipEvent sponsor: es) {
+      sum = sum.add(sponsor.getAmount())
+    }
+    sum
+  }
 
-    private SponsorshipEvent sponsorshipEvent;
+  List<Event> getEvents() {
+    if (events == null) {
+      events = eventBean.findParentEvents()
+    }
+    events
+  }
 
-    private List<SponsorshipEvent> sponsorshipsEvent;
-    private List<Event> events;
-    private List<Partner> partners;
+  List<Partner> getPartners() {
+    if (partners == null) {
+      partners = partnerBean.findPartners()
+    }
+    partners
+  }
 
-    private String selectedEvent;
-    private String selectedPartner;
-
-    public SponsorshipEventMBean() {
+  @PostConstruct
+  void load() {
+    if (eventId) {
+      event = eventBean.find(eventId)
+      selectedEvent = event.id
     }
 
-    public String getId() {
-        return id;
+    if (id) {
+      sponsorshipEvent = sponsorshipEventBean.find(id)
+      selectedEvent = sponsorshipEvent.event.id
+      selectedPartner = sponsorshipEvent.partner.id
+    } else {
+      sponsorshipEvent = new SponsorshipEvent()
     }
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  String save() {
+    Event evt = eventBean.find(selectedEvent)
+    sponsorshipEvent.setEvent(evt)
+    Partner spon = partnerBean.find(selectedPartner)
+    sponsorshipEvent.setPartner(spon)
+    sponsorshipEventBean.save(sponsorshipEvent)
+    'event?faces-redirect=true&tab=6&id=' + evt.id
+  }
 
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public SponsorshipEvent getSponsorshipEvent() {
-        return sponsorshipEvent;
-    }
-
-    public void setSponsorshipEvent(SponsorshipEvent sponsorshipEvent) {
-        this.sponsorshipEvent = sponsorshipEvent;
-    }
-
-    public List<SponsorshipEvent> getSponsorshipsEvent() {
-        if (sponsorshipsEvent == null) {
-            this.sponsorshipsEvent = sponsorshipEventBean.findSponsorshipsEvent(this.event);
-        }
-        return this.sponsorshipsEvent;
-    }
-
-    public BigDecimal getSumAmounts() {
-        BigDecimal sum = BigDecimal.ZERO;
-        List<SponsorshipEvent> es = getSponsorshipsEvent();
-        for(SponsorshipEvent sponsor: es) {
-            sum = sum.add(sponsor.getAmount());
-        }
-        return sum;
-    }
-
-    public String getSelectedEvent() {
-        return this.selectedEvent;
-    }
-
-    public void setSelectedEvent(String selectedEvent) {
-        this.selectedEvent = selectedEvent;
-    }
-
-    public List<Event> getEvents() {
-        if (this.events == null) {
-            this.events = eventBean.findParentEvents();
-        }
-        return this.events;
-    }
-
-    public String getSelectedPartner() {
-        return this.selectedPartner;
-    }
-
-    public void setSelectedPartner(String selectedPartner) {
-        this.selectedPartner = selectedPartner;
-    }
-
-    public List<Partner> getPartners() {
-        if (this.partners == null) {
-            this.partners = partnerBean.findPartners();
-        }
-        return this.partners;
-    }
-
-    @PostConstruct
-    public void load() {
-        if (this.eventId != null && !this.eventId.isEmpty()) {
-            this.event = eventBean.find(eventId);
-            this.selectedEvent = this.event.getId();
-        }
-
-        if (this.id != null && !this.id.isEmpty()) {
-            this.sponsorshipEvent = sponsorshipEventBean.find(id);
-            this.selectedEvent = this.sponsorshipEvent.getEvent().getId();
-            this.selectedPartner = this.sponsorshipEvent.getPartner().getId();
-        } else {
-            this.sponsorshipEvent = new SponsorshipEvent();
-        }
-    }
-
-    public String save() {
-        Event evt = eventBean.find(selectedEvent);
-        this.sponsorshipEvent.setEvent(evt);
-
-        Partner spon = partnerBean.find(selectedPartner);
-        this.sponsorshipEvent.setPartner(spon);
-
-        sponsorshipEventBean.save(this.sponsorshipEvent);
-        return "event?faces-redirect=true&tab=6&id=" + evt.getId();
-    }
-
-    public String remove() {
-        sponsorshipEventBean.remove(this.sponsorshipEvent.getId());
-        return "event?faces-redirect=true&tab=6&id=" + this.event.getId();
-    }
+  String remove() {
+    sponsorshipEventBean.remove(sponsorshipEvent.id)
+    'event?faces-redirect=true&tab=6&id=' + event.id
+  }
 }

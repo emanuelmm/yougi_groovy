@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,37 +18,27 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.business;
+package org.yougi.business
 
-import org.yougi.entity.MessageHistory;
-import org.yougi.entity.UserAccount;
+import org.yougi.entity.MessageHistory
+import org.yougi.entity.UserAccount
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
+import javax.ejb.Stateless
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Stateless
-public class MessageHistoryBean extends AbstractBean<MessageHistory> {
+class MessageHistoryBean {
 
-    @PersistenceContext
-    private EntityManager em;
+  @PersistenceContext
+  private EntityManager em
 
-    public MessageHistoryBean() {
-        super(MessageHistory.class);
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-
-    public List<MessageHistory> findByRecipient(UserAccount recipient) {
-    	return em.createQuery("select hm from MessageHistory hm where hm.recipient = :userAccount order by hm.dateSent desc", MessageHistory.class)
-                 .setParameter("userAccount", recipient)
-                 .getResultList();
-    }
+  List<MessageHistory> findByRecipient(UserAccount recipient) {
+    em.createQuery('select hm from MessageHistory hm where hm.recipient = :userAccount order by hm.dateSent desc', MessageHistory)
+      .setParameter('userAccount', recipient)
+      .getResultList()
+  }
 }

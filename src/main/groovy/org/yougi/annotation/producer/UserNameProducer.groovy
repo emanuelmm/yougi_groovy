@@ -33,7 +33,6 @@ import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.inject.Named
 import javax.servlet.http.HttpServletRequest
-import java.io.Serializable
 
 /**
  * @author Daniel Cunha - danielsoro@gmail.com

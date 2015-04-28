@@ -25,7 +25,6 @@ import org.yougi.reference.JobFrequencyType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.util.Calendar;
 
 /**
  * Daily scheduled batch job.
@@ -71,7 +70,6 @@ public class JobSchedulerDaily extends JobScheduler {
                 startTime.add(Calendar.DAY_OF_YEAR, 1);
             }
         }
-
 
         if(this.getEndDate() != null) {
             Calendar endDate = Calendar.getInstance();

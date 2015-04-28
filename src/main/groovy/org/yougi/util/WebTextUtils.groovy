@@ -20,8 +20,6 @@
  * */
 package org.yougi.util
 
-import java.util.StringTokenizer
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */

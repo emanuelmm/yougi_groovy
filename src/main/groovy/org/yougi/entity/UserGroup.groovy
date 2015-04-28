@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,10 +18,9 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.entity;
+package org.yougi.entity
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.*
 
 /**
  * Represents the allocation of users in groups.
@@ -29,110 +28,56 @@ import java.io.Serializable;
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Entity
-@Table(name = "user_group")
-public class UserGroup implements Serializable {
-    private static final long serialVersionUID = 1L;
+@Table(name = 'user_group')
+class UserGroup implements Serializable {
 
-    @EmbeddedId
-    private UserGroupId id;
+  @EmbeddedId
+  UserGroupId id
 
-    @ManyToOne
-    @JoinColumn(name="user_id", insertable = false, updatable = false)
-    private UserAccount userAccount;
+  @ManyToOne
+  @JoinColumn(name='user_id', insertable = false, updatable = false)
+  UserAccount userAccount
 
-    @ManyToOne
-    @JoinColumn(name="group_id", insertable = false, updatable = false)
-    private AccessGroup accessGroup;
+  @ManyToOne
+  @JoinColumn(name='group_id', insertable = false, updatable = false)
+  AccessGroup accessGroup
 
-    private String username;
+  String username
 
-    @Column(name = "group_name")
-    private String groupName;
+  @Column(name = 'group_name')
+  String groupName
 
-    public UserGroup() {
+  UserGroup() {
+  }
+
+  UserGroup(AccessGroup accessGroup, Authentication authentication) {
+    this.accessGroup = accessGroup
+    this.userAccount = authentication.getUserAccount()
+    this.id = new UserGroupId(this.accessGroup.getId(), this.userAccount.getId())
+    this.username = authentication.getUsername()
+    this.groupName = this.accessGroup.getName()
+  }
+
+  void setAuthentication(Authentication authentication) {
+    userAccount = authentication.getUserAccount()
+    if(id == null) {
+      id = new UserGroupId()
     }
+    id.setUserId(userAccount.id)
+    username = authentication.username
+  }
 
-    public UserGroup(AccessGroup accessGroup, Authentication authentication) {
-        this.accessGroup = accessGroup;
-        this.userAccount = authentication.getUserAccount();
-        this.id = new UserGroupId(this.accessGroup.getId(), this.userAccount.getId());
-        this.username = authentication.getUsername();
-        this.groupName = this.accessGroup.getName();
+  void setAccessGroup(AccessGroup accessGroup) {
+    this.accessGroup = accessGroup
+    if(id == null) {
+      id = new UserGroupId()
     }
+    id.setGroupId(accessGroup.id)
+    groupName = accessGroup.name
+  }
 
-    public UserGroupId getId() {
-        return this.id;
-    }
-
-    public void setId(UserGroupId id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
-
-    public void setAuthentication(Authentication authentication) {
-        this.userAccount = authentication.getUserAccount();
-
-        if(this.id == null) {
-            this.id = new UserGroupId();
-        }
-        this.id.setUserId(this.userAccount.getId());
-        this.username = authentication.getUsername();
-    }
-
-    public AccessGroup getAccessGroup() {
-        return accessGroup;
-    }
-
-    public void setAccessGroup(AccessGroup accessGroup) {
-        this.accessGroup = accessGroup;
-
-        if(this.id == null) {
-            this.id = new UserGroupId();
-        }
-        this.id.setGroupId(accessGroup.getId());
-        this.groupName = accessGroup.getName();
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof UserGroup)) {
-            return false;
-        }
-        UserGroup other = (UserGroup) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return username;
-    }
+  @Override
+  String toString() {
+    username
+  }
 }

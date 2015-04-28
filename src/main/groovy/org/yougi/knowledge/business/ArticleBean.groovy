@@ -30,7 +30,6 @@ import org.yougi.knowledge.entity.WebSource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 /**
  * Business logic dealing with articles from a web source.

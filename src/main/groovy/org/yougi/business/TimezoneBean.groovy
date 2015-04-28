@@ -25,7 +25,6 @@ import org.yougi.entity.Timezone;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 /**
  * Manages user-friendly time zones.

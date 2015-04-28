@@ -30,6 +30,7 @@ import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Order
 import javax.persistence.criteria.Root
+import javax.persistence.NoResultException
 
 @Transactional
 class GenericPersistence implements Serializable {
@@ -69,6 +70,14 @@ class GenericPersistence implements Serializable {
     CriteriaQuery<T> cq = em.getCriteriaBuilder().createQuery(klass)
     cq.select(cq.from(klass))
     em.createQuery(cq).getResultList()
+  }
+
+  public <T> T findWithParam(String jpql, Object param, Class<T> klass) throws Exception {
+    try {
+      return em.createQuery(jpql, klass).setParameter(1, param).getSingleResult()
+    } catch (NoResultException e) {
+      return null
+    }
   }
 
   public <T> List<T> findAllWithParam(String jpql, Object param, Class<T> klass) {

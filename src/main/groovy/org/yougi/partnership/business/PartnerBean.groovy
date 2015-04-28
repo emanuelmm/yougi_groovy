@@ -26,7 +26,6 @@ import org.yougi.partnership.entity.Partner;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 /**
  * Manages partners of the user group.

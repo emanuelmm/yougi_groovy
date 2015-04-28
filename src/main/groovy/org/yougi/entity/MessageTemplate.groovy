@@ -23,11 +23,6 @@ package org.yougi.entity;
 import org.yougi.reference.EmailMessageFormat;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -30,10 +30,6 @@ import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**

@@ -34,16 +34,13 @@ import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.inject.Named
 import javax.servlet.http.HttpServletRequest
-import java.io.Serializable
-import java.util.List
-import java.util.Map
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-public class ApplicationPropertiesMBean implements Serializable {
+class ApplicationPropertiesMBean implements Serializable {
 
   @EJB
   private ApplicationPropertyBean applicationPropertyBean

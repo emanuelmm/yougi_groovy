@@ -21,7 +21,6 @@
 package org.yougi.entity
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

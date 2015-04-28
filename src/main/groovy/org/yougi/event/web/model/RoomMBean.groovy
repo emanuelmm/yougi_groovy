@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,159 +18,96 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.event.web.model;
+package org.yougi.event.web.model
 
-import org.yougi.event.business.EventBean;
-import org.yougi.event.business.RoomBean;
-import org.yougi.event.business.SessionBean;
-import org.yougi.event.business.VenueBean;
-import org.yougi.event.entity.*;
-import org.yougi.annotation.ManagedProperty;
+import org.yougi.event.business.EventBean
+import org.yougi.event.business.RoomBean
+import org.yougi.event.business.SessionBean
+import org.yougi.event.business.VenueBean
+import org.yougi.event.entity.*
+import org.yougi.annotation.ManagedProperty
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.List;
+import javax.annotation.PostConstruct
+import javax.ejb.EJB
+import javax.enterprise.context.RequestScoped
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-public class RoomMBean implements Serializable {
+class RoomMBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  @EJB
+  private RoomBean roomBean
+  @EJB
+  private SessionBean sessionBean
+  @EJB
+  private EventBean eventBean
+  @EJB
+  private VenueBean venueBean
 
-    @EJB
-    private RoomBean roomBean;
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
+  @Inject
+  @ManagedProperty('#{param.eventId}')
+  String eventId
+  @Inject
+  @ManagedProperty('#{param.venueId}')
+  String venueId
 
-    @EJB
-    private SessionBean sessionBean;
+  Event event
+  Room room
+  List<SessionEvent> sessions
+  List<Speaker> speakers
+  List<Venue> venues
+  String selectedVenue
 
-    @EJB
-    private EventBean eventBean;
+  RoomMBean() {
+    room = new Room()
+  }
 
-    @EJB
-    private VenueBean venueBean;
-
-    @Inject
-    @ManagedProperty("#{param.id}")
-    private String id;
-
-    @Inject
-    @ManagedProperty("#{param.eventId}")
-    private String eventId;
-
-    @Inject
-    @ManagedProperty("#{param.venueId}")
-    private String venueId;
-
-    private Event event;
-    private Room room;
-
-    private List<SessionEvent> sessions;
-    private List<Speaker> speakers;
-    private List<Venue> venues;
-
-    private String selectedVenue;
-
-    public RoomMBean() {
-        this.room = new Room();
+  List<SessionEvent> getSessions() {
+    if (sessions == null) {
+      sessions = sessionBean.findSessionsByRoom(event, room)
     }
+    sessions
+  }
 
-    public String getId() {
-        return id;
+  List<Speaker> getSpeakers() {
+    if(speakers == null) {
+      speakers = sessionBean.findSessionSpeakersByRoom(event, room)
     }
+    speakers
+  }
 
-    public void setId(String id) {
-        this.id = id;
+  List<Venue> getVenues() {
+    if(venues == null) {
+      venues = venueBean.findVenues()
     }
+    venues
+  }
 
-    public String getEventId() {
-        return eventId;
+  @PostConstruct
+  void load() {
+    if (eventId) {
+      event = eventBean.find(eventId)
     }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    if (venueId) {
+      selectedVenue = venueId
     }
-
-    public String getVenueId() {
-        return venueId;
+    if (id) {
+      room = roomBean.find(id)
+      selectedVenue = room.venue.id
     }
+  }
 
-    public void setVenueId(String venueId) {
-        this.venueId = venueId;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public String getSelectedVenue() {
-        return selectedVenue;
-    }
-
-    public void setSelectedVenue(String selectedVenue) {
-        this.selectedVenue = selectedVenue;
-    }
-
-    public List<SessionEvent> getSessions() {
-        if (this.sessions == null) {
-            this.sessions = sessionBean.findSessionsByRoom(this.event, this.room);
-        }
-        return this.sessions;
-    }
-
-    public List<Speaker> getSpeakers() {
-        if(this.speakers == null) {
-            this.speakers = sessionBean.findSessionSpeakersByRoom(this.event, this.room);
-        }
-        return this.speakers;
-    }
-
-    public List<Venue> getVenues() {
-        if(this.venues == null) {
-            this.venues = venueBean.findVenues();
-        }
-        return this.venues;
-    }
-
-    @PostConstruct
-    public void load() {
-        if (this.eventId != null && !this.eventId.isEmpty()) {
-            this.event = eventBean.find(eventId);
-        }
-
-        if (this.venueId != null && !this.venueId.isEmpty()) {
-            this.selectedVenue = venueId;
-        }
-
-        if (this.id != null && !this.id.isEmpty()) {
-            this.room = roomBean.find(id);
-            this.selectedVenue = this.room.getVenue().getId();
-        }
-    }
-
-    public String save() {
-        this.room.setVenue(new Venue(this.selectedVenue));
-
-        roomBean.save(this.room);
-
-        return "venue?faces-redirect=true&tab=1&id="+ this.selectedVenue;
-    }
+  String save() {
+    room.setVenue(new Venue(selectedVenue))
+    roomBean.save(room)
+    'venue?faces-redirect=true&tab=1&id='+ selectedVenue
+  }
 }

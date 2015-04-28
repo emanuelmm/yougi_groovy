@@ -29,7 +29,6 @@ import org.yougi.partnership.entity.Partner;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 /**
  * This class implements the business logic of event sponsorship.

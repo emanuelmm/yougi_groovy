@@ -24,7 +24,6 @@ import org.yougi.reference.JobFrequencyType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.util.Calendar;
 
 /**
  * Weekly scheduled batch job.

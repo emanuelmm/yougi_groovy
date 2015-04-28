@@ -31,8 +31,6 @@ import javax.ejb.Stateless;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * Centralizes the posting of all email messages sent by the system and manage

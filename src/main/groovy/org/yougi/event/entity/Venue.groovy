@@ -26,7 +26,6 @@ import org.yougi.entity.Identified
 import org.yougi.entity.Province
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * Venue is the place where an event is organized.
@@ -55,18 +54,18 @@ class Venue implements Serializable, Identified {
   String website
 
   String getLocation() {
-    StringBuilder location = new StringBuilder()
-    String separator = ''
+    def location = ''
+    def separator = ''
     if (city) {
-      location.append(city.getName())
+      location <<= city.name
       separator = ', '
     }
 
     if (country) {
-      location.append(separator)
-      location.append(country.getName())
+      location <<= separator
+      location <<= country.name
     }
-    location.toString()
+    location
   }
 
   @Override

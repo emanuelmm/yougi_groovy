@@ -41,56 +41,52 @@ import org.yougi.entity.UserAccount
 @RequestScoped
 class AccessGroupMBean {
 
-	@EJB
-	AccessGroupBean accessGroupBean
+  @EJB
+  AccessGroupBean accessGroupBean
+  @EJB
+  UserAccountBean userAccountBean
+  @EJB
+  UserGroupBean userGroupBean
 
-	@EJB
-	UserAccountBean userAccountBean
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String groupId
 
-	@EJB
-	UserGroupBean userGroupBean
+  AccessGroup group
 
-	@Inject
-	@ManagedProperty("#{param.id}")
-	String groupId
+  // List of members for the picklist.
+  def members
 
-	AccessGroup group
+  def getGroups() {
+    accessGroupBean.findAccessGroups()
+  }
 
-	// List of members for the picklist.
-	def members
+  @PostConstruct
+  void load() {
+    def allUsers = userAccountBean.findAllActiveAccounts()
+    def target = new ArrayList<>()
 
-	def getGroups() {
-		accessGroupBean.findAccessGroups()
-	}
+    if(groupId) {
+      group = accessGroupBean.find(groupId)
+      target.addAll(userGroupBean.findUsersGroup(group))
+      allUsers.removeAll(target)
+    } else {
+      group = new AccessGroup()
+    }
+    members = new DualListModel<>(allUsers, target)
+  }
 
-	@PostConstruct
-	void load() {
-		def allUsers = userAccountBean.findAllActiveAccounts()
-		def target = new ArrayList<>()
+  String save() {
+    def selectedMembers = new ArrayList<>()
+    def membersIds = members.target
+    UserAccount userAccount
 
-		if(groupId) {
-			this.group = accessGroupBean.find(this.groupId)
-			target.addAll(userGroupBean.findUsersGroup(group))
-			allUsers.removeAll(target)
-		} else {
-			this.group = new AccessGroup()
-		}
-		this.members = new DualListModel<>(allUsers, target)
-	}
+    for (i in 0..membersIds.size()-1) {
+      userAccount = new UserAccount(((UserAccount)membersIds.get(i)).id)
+      selectedMembers.add(userAccount)
+    }
 
-	@SuppressWarnings("rawtypes")
-	String save() {
-		def selectedMembers = new ArrayList<>()
-		def membersIds = this.members.getTarget()
-		UserAccount userAccount
-		
-		for (i in 0..membersIds.size()-1) {
-			userAccount = new UserAccount(((UserAccount)membersIds.get(i)).getId())
-			selectedMembers.add(userAccount)
-		}
-		
-		accessGroupBean.save(this.group, selectedMembers)
-
-		"groups?faces-redirect=true"
-	}
+    accessGroupBean.save(group, selectedMembers)
+    'groups?faces-redirect=true'
+  }
 }

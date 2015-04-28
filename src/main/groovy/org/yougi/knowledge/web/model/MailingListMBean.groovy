@@ -36,38 +36,38 @@ import org.yougi.knowledge.entity.MailingList
 @RequestScoped
 class MailingListMBean implements Serializable {
 
-	@EJB
-	private org.yougi.knowledge.business.MailingListBean mailingListBean
+  @EJB
+  private org.yougi.knowledge.business.MailingListBean mailingListBean
 
-	@Inject
-	@ManagedProperty('#{param.id}')
-	String id
-	MailingList mailingList
-	def mailingLists
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
+  MailingList mailingList
+  def mailingLists
 
-	List<MailingList> getMailingLists() {
-		if(mailingLists == null) {
-			mailingLists = mailingListBean.findMailingLists()
-		}
-		mailingLists
-	}
+  List<MailingList> getMailingLists() {
+    if(mailingLists == null) {
+      mailingLists = mailingListBean.findMailingLists()
+    }
+    mailingLists
+  }
 
-	@PostConstruct
-	void load() {
-		if(id) {
-			mailingList = mailingListBean.find(id)
-		} else {
-			mailingList = new MailingList()
-		}
-	}
+  @PostConstruct
+  void load() {
+    if(id) {
+      mailingList = mailingListBean.find(id)
+    } else {
+      mailingList = new MailingList()
+    }
+  }
 
-	String save() {
-		mailingListBean.save(mailingList)
-		'mailing_lists?faces-redirect=true'
-	}
+  String save() {
+    mailingListBean.save(mailingList)
+    'mailing_lists?faces-redirect=true'
+  }
 
-	String remove() {
-		mailingListBean.remove(mailingList.id)
-		'mailing_lists?faces-redirect=true'
-	}
+  String remove() {
+    mailingListBean.remove(mailingList.id)
+    'mailing_lists?faces-redirect=true'
+  }
 }

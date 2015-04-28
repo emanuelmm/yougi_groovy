@@ -20,8 +20,6 @@
  * */
 package org.yougi.entity;
 
-import java.util.Locale;
-
 public enum Language {
 
     ENGLISH("en"),

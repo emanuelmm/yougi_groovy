@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,310 +18,236 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.event.web.model;
+package org.yougi.event.web.model
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
+import javax.annotation.PostConstruct
+import javax.ejb.EJB
+import javax.enterprise.context.RequestScoped
+import javax.inject.Inject
+import javax.inject.Named
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.primefaces.model.chart.PieChartModel;
-import org.yougi.annotation.ManagedProperty;
-import org.yougi.annotation.UserName;
-import org.yougi.business.UserAccountBean;
-import org.yougi.entity.UserAccount;
-import org.yougi.event.business.AttendeeBean;
-import org.yougi.event.business.EventBean;
-import org.yougi.event.business.EventVenueBean;
-import org.yougi.event.business.SessionBean;
-import org.yougi.event.business.SpeakerBean;
-import org.yougi.event.business.SponsorshipEventBean;
-import org.yougi.event.business.TrackBean;
-import org.yougi.event.entity.Attendee;
-import org.yougi.event.entity.Event;
-import org.yougi.event.entity.SessionEvent;
-import org.yougi.event.entity.Speaker;
-import org.yougi.event.entity.SponsorshipEvent;
-import org.yougi.event.entity.Track;
-import org.yougi.event.entity.Venue;
-import org.yougi.util.DateTimeUtils;
-import org.yougi.util.ResourceBundleHelper;
-import org.yougi.util.WebTextUtils;
-import org.yougi.web.model.UserProfileMBean;
+import org.primefaces.model.chart.PieChartModel
+import org.yougi.annotation.ManagedProperty
+import org.yougi.annotation.UserName
+import org.yougi.business.UserAccountBean
+import org.yougi.entity.UserAccount
+import org.yougi.event.business.AttendeeBean
+import org.yougi.event.business.EventBean
+import org.yougi.event.business.EventVenueBean
+import org.yougi.event.business.SessionBean
+import org.yougi.event.business.SpeakerBean
+import org.yougi.event.business.SponsorshipEventBean
+import org.yougi.event.business.TrackBean
+import org.yougi.event.entity.Attendee
+import org.yougi.event.entity.Event
+import org.yougi.event.entity.SessionEvent
+import org.yougi.event.entity.Speaker
+import org.yougi.event.entity.SponsorshipEvent
+import org.yougi.event.entity.Track
+import org.yougi.event.entity.Venue
+import org.yougi.util.DateTimeUtils
+import org.yougi.util.ResourceBundleHelper
+import org.yougi.util.WebTextUtils
+import org.yougi.web.model.UserProfileMBean
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-public class EventMBean {
+class EventMBean {
 
-    @EJB
-    private EventBean eventBean;
+  @EJB
+  private EventBean eventBean
+  @EJB
+  private SessionBean sessionBean
+  @EJB
+  private SpeakerBean speakerBean
+  @EJB
+  private TrackBean trackBean
+  @EJB
+  private AttendeeBean attendeeBean
+  @EJB
+  private UserAccountBean userAccountBean
+  @EJB
+  private EventVenueBean eventVenueBean
+  @EJB
+  private SponsorshipEventBean sponsorshipEventBean
 
-    @EJB
-    private SessionBean sessionBean;
+  @Inject
+  @ManagedProperty('#{param.id}')
+  String id
 
-    @EJB
-    private SpeakerBean speakerBean;
+  @Inject
+  private UserProfileMBean userProfileMBean
 
-    @EJB
-    private TrackBean trackBean;
+  @Inject
+  @UserName
+  String username
 
-    @EJB
-    private AttendeeBean attendeeBean;
+  Event event
+  Attendee attendee
+  String selectedParent
 
-    @EJB
-    private UserAccountBean userAccountBean;
+  List<Event> events
+  List<Event> subEvents
+  List<Event> parentEvents
+  List<Venue> venues
+  List<SessionEvent> sessions
+  List<Track> tracks
+  List<Speaker> speakers
+  List<Attendee> attendees
+  List<SponsorshipEvent> sponsors
 
-    @EJB
-    private EventVenueBean eventVenueBean;
+  Long numberPeopleAttending
+  Long numberPeopleAttended
 
-    @EJB
-    private SponsorshipEventBean sponsorshipEventBean;
+  /**
+   * @return true if the event ocurred on the day before today.
+   */
+  Boolean getHappened() {
+    TimeZone tz = TimeZone.getTimeZone(userProfileMBean.getTimeZone())
+    Calendar today = Calendar.getInstance(tz)
+    event.getStartDate().before(today.getTime())
+  }
 
-    @Inject
-    @ManagedProperty("#{param.id}")
-    private String id;
+  /**
+   * @return true if the member has the intention to attend the event. It does
+   * not mean that s(he) actually attended it.
+   */
+  Boolean getIsAttending() {
+    attendee && attendee.id
+  }
 
-    @Inject
-    private UserProfileMBean userProfileMBean;
+  /**
+   * @return true if the member actually attended the event.
+   */
+  Boolean getAttended() {
+    attendee?.attended
+  }
 
-    @Inject
-    @UserName
-    private String username;
-
-    private Event event;
-    private Attendee attendee;
-    private String selectedParent;
-
-    private List<Event> events;
-    private List<Event> subEvents;
-    private List<Event> parentEvents;
-    private List<Venue> venues;
-    private List<SessionEvent> sessions;
-    private List<Track> tracks;
-    private List<Speaker> speakers;
-    private List<Attendee> attendees;
-    private List<SponsorshipEvent> sponsors;
-
-    private Long numberPeopleAttending;
-
-    private Long numberPeopleAttended;
-
-    public EventMBean() {
+  List<Event> getEvents() {
+    if (events == null) {
+      events = eventBean.findParentEvents()
     }
+    events
+  }
 
-    public String getId() {
-        return id;
+  List<Event> getParentEvents() {
+    if (parentEvents == null) {
+      parentEvents = eventBean.findParentEvents()
     }
+    parentEvents
+  }
 
-    public void setId(String id) {
-        this.id = id;
+  List<Venue> getVenues() {
+    if(venues == null) {
+      venues = eventVenueBean.findEventVenues(event)
     }
+    venues
+  }
 
-    public Event getEvent() {
-        return event;
+  List<Event> getSubEvents() {
+    if (subEvents == null) {
+      subEvents = eventBean.findEvents(event)
     }
+    subEvents
+  }
 
-    public void setEvent(Event event) {
-        this.event = event;
+  List<SessionEvent> getSessions() {
+    if (sessions == null) {
+      sessions = sessionBean.findSessionsWithSpeakers(event)
     }
+    sessions
+  }
 
-    public String getSelectedParent() {
-        return this.selectedParent;
+  List<SessionEvent> getSessions(Event event) {
+    sessionBean.findSessionsWithSpeakers(event)
+  }
+
+  List<Track> getTracks() {
+    if (tracks == null) {
+      tracks = trackBean.findTracks(event)
     }
+    tracks
+  }
 
-    public void setSelectedParent(String selectedParent) {
-        this.selectedParent = selectedParent;
+  List<Track> getTracks(Event event) {
+    trackBean.findTracks(event)
+  }
+
+  List<Speaker> getSpeakers() {
+    if (speakers == null) {
+      speakers = speakerBean.findSpeakers(event)
     }
+    speakers
+  }
 
-    /**
-     * @return true if the event ocurred on the day before today.
-     */
-    public Boolean getHappened() {
-        TimeZone tz = TimeZone.getTimeZone(userProfileMBean.getTimeZone());
-        Calendar today = Calendar.getInstance(tz);
+  List<Speaker> getSpeakers(Event event) {
+    speakerBean.findSpeakers(event)
+  }
 
-        if(this.event.getStartDate().before(today.getTime())) {
-            return true;
-        }
-
-        return false;
+  List<Attendee> getAttendees() {
+    if (attendees == null) {
+      attendees = attendeeBean.findAllAttendees(event)
     }
+    attendees
+  }
 
-    /**
-     * @return true if the member has the intention to attend the event. It does
-     * not mean that s(he) actually attended it.
-     */
-    public Boolean getIsAttending() {
-        return this.attendee != null && this.attendee.getId() != null;
+  List<SponsorshipEvent> getSponsors() {
+    if(sponsors == null) {
+      sponsors = sponsorshipEventBean.findSponsorshipsEvent(event)
     }
+    sponsors
+  }
 
-    /**
-     * @return true if the member actually attended the event.
-     */
-    public Boolean getAttended() {
-        if(attendee != null) {
-            return attendee.getAttended();
-        }
-        return Boolean.FALSE;
+  PieChartModel getAttendanceRateChartModel() {
+    PieChartModel pieChartModel = new PieChartModel()
+    pieChartModel.set('Registered', numberPeopleAttending)
+    pieChartModel.set('Attended', numberPeopleAttended)
+    pieChartModel
+  }
+
+  String getFormattedEventDescription() {
+    WebTextUtils.convertLineBreakToHTMLParagraph(event.getDescription())
+  }
+
+  String getFormattedRegistrationDate() {
+    if (attendee == null) {
+      return ''
     }
+    DateTimeUtils.getFormattedDate(attendee.registrationDate, ResourceBundleHelper.getMessage('formatDate'))
+  }
 
-    public List<Event> getEvents() {
-        if (events == null) {
-            events = eventBean.findParentEvents();
-        }
-        return events;
+  @PostConstruct
+  void load() {
+    if (id) {
+      event = eventBean.find(id)
+      if(event.parent) {
+        selectedParent = event.parent.id
+      }
+
+      UserAccount person = userAccountBean.findByUsername(username)
+      attendee = attendeeBean.find(event, person)
+
+      numberPeopleAttending = attendeeBean.findNumberPeopleAttending(event)
+      numberPeopleAttended = attendeeBean.findNumberPeopleAttended(event)
+    } else {
+      event = new Event()
     }
+  }
 
-    public List<Event> getParentEvents() {
-        if (parentEvents == null) {
-            parentEvents = eventBean.findParentEvents();
-        }
-        return parentEvents;
+  String save() {
+    if(selectedParent) {
+      event.setParent(new Event(selectedParent))
     }
+    eventBean.save(event)
+    'events?faces-redirect=true'
+  }
 
-    public List<Venue> getVenues() {
-        if(venues == null) {
-            venues = eventVenueBean.findEventVenues(event);
-        }
-        return venues;
-    }
+  String remove() {
+    eventBean.remove(event.id)
+    'events?faces-redirect=true'
+  }
 
-    public List<Event> getSubEvents() {
-        if (subEvents == null) {
-            subEvents = eventBean.findEvents(this.event);
-        }
-        return subEvents;
-    }
-
-    public List<SessionEvent> getSessions() {
-        if (sessions == null) {
-            sessions = sessionBean.findSessionsWithSpeakers(this.event);
-        }
-        return sessions;
-    }
-
-    public List<SessionEvent> getSessions(Event event) {
-        return sessionBean.findSessionsWithSpeakers(event);
-    }
-
-    public List<Track> getTracks() {
-        if (tracks == null) {
-            tracks = trackBean.findTracks(this.event);
-        }
-        return tracks;
-    }
-
-    public List<Track> getTracks(Event event) {
-        return trackBean.findTracks(event);
-    }
-
-    public List<Speaker> getSpeakers() {
-        if (speakers == null) {
-            speakers = speakerBean.findSpeakers(this.event);
-        }
-        return speakers;
-    }
-
-    public List<Speaker> getSpeakers(Event event) {
-        return speakerBean.findSpeakers(event);
-    }
-
-    public List<Attendee> getAttendees() {
-        if (attendees == null) {
-            attendees = attendeeBean.findAllAttendees(this.event);
-        }
-        return attendees;
-    }
-
-    public List<SponsorshipEvent> getSponsors() {
-        if(sponsors == null) {
-            sponsors = sponsorshipEventBean.findSponsorshipsEvent(this.event);
-        }
-        return sponsors;
-    }
-
-    public Long getNumberPeopleAttending() {
-        return numberPeopleAttending;
-    }
-
-    public void setNumberPeopleAttending(Long numberPeopleAttending) {
-        this.numberPeopleAttending = numberPeopleAttending;
-    }
-
-    public void setNumberPeopleAttended(Long numberPeopleAttended) {
-        this.numberPeopleAttended = numberPeopleAttended;
-    }
-
-    public Long getNumberPeopleAttended() {
-        return numberPeopleAttended;
-    }
-
-    public PieChartModel getAttendanceRateChartModel() {
-        PieChartModel pieChartModel = new PieChartModel();
-        pieChartModel.set("Registered", numberPeopleAttending);
-        pieChartModel.set("Attended", numberPeopleAttended);
-        return pieChartModel;
-    }
-
-    public String getFormattedEventDescription() {
-        return WebTextUtils.convertLineBreakToHTMLParagraph(event.getDescription());
-    }
-
-    public String getFormattedRegistrationDate() {
-        if (this.attendee == null) {
-            return "";
-        }
-        return DateTimeUtils.getFormattedDate(this.attendee.getRegistrationDate(),
-                                              ResourceBundleHelper.getMessage("formatDate"));
-    }
-
-    @PostConstruct
-    public void load() {
-        if (id != null && !id.isEmpty()) {
-            this.event = eventBean.find(id);
-
-            if(this.event.getParent() != null) {
-                this.selectedParent = this.event.getParent().getId();
-            }
-
-            UserAccount person = userAccountBean.findByUsername(username);
-
-            this.attendee = attendeeBean.find(this.event, person);
-
-            this.numberPeopleAttending = attendeeBean.findNumberPeopleAttending(this.event);
-            this.numberPeopleAttended = attendeeBean.findNumberPeopleAttended(this.event);
-        } else {
-            this.event = new Event();
-        }
-    }
-
-    public String save() {
-        if(selectedParent != null && !selectedParent.isEmpty()) {
-            this.event.setParent(new Event(selectedParent));
-        }
-        eventBean.save(this.event);
-
-        return "events?faces-redirect=true";
-    }
-
-    public String remove() {
-        eventBean.remove(this.event.getId());
-        return "events?faces-redirect=true";
-    }
-
-    public UserProfileMBean getUserProfileMBean() {
-        return userProfileMBean;
-    }
-
-    public void setUserProfileMBean(UserProfileMBean userProfileMBean) {
-        this.userProfileMBean = userProfileMBean;
-    }
 }

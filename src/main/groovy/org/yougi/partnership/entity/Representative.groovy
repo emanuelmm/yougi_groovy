@@ -24,7 +24,6 @@ import org.yougi.entity.Identified
 import org.yougi.entity.UserAccount
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com

@@ -24,8 +24,6 @@ import org.yougi.reference.JobFrequencyType;
 import org.yougi.util.DateTimeUtils;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Daily scheduled batch job.

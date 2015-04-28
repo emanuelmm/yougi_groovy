@@ -20,8 +20,6 @@
  * */
 package org.yougi.reference;
 
-import java.util.Calendar;
-
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */

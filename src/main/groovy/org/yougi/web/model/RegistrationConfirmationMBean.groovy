@@ -3,13 +3,13 @@
  * constantly sharing information and participating in social and educational
  * events. Copyright (C) 2011 Hildeberto Mendonça.
  *
- * This application is free software; you can redistribute it and/or modify it
+ * This application is free software you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or (at your
+ * Free Software Foundation either version 2.1 of the License, or (at your
  * option) any later version.
  *
  * This application is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
@@ -18,120 +18,79 @@
  * find it, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA.
  * */
-package org.yougi.web.model;
+package org.yougi.web.model
 
-import org.yougi.business.UserAccountBean;
-import org.yougi.entity.UserAccount;
-import org.yougi.util.ResourceBundleHelper;
-import org.yougi.annotation.ManagedProperty;
+import org.yougi.business.UserAccountBean
+import org.yougi.entity.UserAccount
+import org.yougi.util.ResourceBundleHelper
+import org.yougi.annotation.ManagedProperty
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.annotation.PostConstruct
+import javax.ejb.EJB
+import javax.enterprise.context.RequestScoped
+import javax.faces.application.FacesMessage
+import javax.faces.context.FacesContext
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author Hildeberto Mendonca - http://www.hildeberto.com
  */
 @Named
 @RequestScoped
-public class RegistrationConfirmationMBean {
+class RegistrationConfirmationMBean {
 
-    @EJB
-    private UserAccountBean userAccountBean;
+  @EJB
+  private UserAccountBean userAccountBean
+  @Inject
+  private FacesContext context
 
-    @Inject
-    private FacesContext context;
+  UserAccount userAccount
 
-    private UserAccount userAccount;
+  @Inject
+  @ManagedProperty('#{param.code}')
+  String code
+  String informedCode
+  Boolean validated
 
-    @Inject
-    @ManagedProperty("#{param.code}")
-    private String code;
+  RegistrationConfirmationMBean() {
+    userAccount = new UserAccount()
+  }
 
-    private String informedCode;
-
-    private Boolean validated;
-
-    public RegistrationConfirmationMBean() {
-        this.userAccount = new UserAccount();
+  /**
+   * Validates the registration when the confirmation code comes
+   * through query string.
+   */
+  @PostConstruct
+  void load() {
+    if(code) {
+      userAccount = userAccountBean.confirmUser(code)
+      if(userAccount) {
+        validated = Boolean.TRUE
+      } else {
+        validated = Boolean.FALSE
+        context.addMessage(informedCode, new FacesMessage(FacesMessage.SEVERITY_WARN, ResourceBundleHelper.getMessage('warnCode0003'), ''))
+      }
     }
+  }
 
-    public String getCode() {
-        return this.code;
+  /**
+   * Validates the registration when the confirmation code is
+   * manually informed.
+   */
+  String confirmUser() {
+    if(informedCode) {
+      userAccount = userAccountBean.confirmUser(informedCode)
+      if(userAccount) {
+        validated = Boolean.TRUE
+      } else {
+        validated = Boolean.FALSE
+      }
+
+      if(!validated) {
+        context.addMessage(informedCode, new FacesMessage(FacesMessage.SEVERITY_WARN, ResourceBundleHelper.getMessage('warnCode0003'), ''))
+      }
     }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    /**
-     * @return the code informed manually by the user.
-     */
-    public String getInformedCode() {
-        return informedCode;
-    }
-
-    public void setInformedCode(String informedCode) {
-        this.informedCode = informedCode;
-    }
-
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
-
-    public void setUserAccount(UserAccount userAccount) {
-        this.userAccount = userAccount;
-    }
-
-    /**
-     * @return the whether the registration was validated.
-     */
-    public Boolean getValidated() {
-        return validated;
-    }
-
-    public void setValidated(Boolean validated) {
-        this.validated = validated;
-    }
-
-    /**
-     * Validates the registration when the confirmation code comes
-     * through query string.
-     */
-    @PostConstruct
-    public void load() {
-        if(this.code != null && !this.code.isEmpty()) {
-            this.userAccount = userAccountBean.confirmUser(this.code);
-            if(this.userAccount != null) {
-                this.validated = Boolean.TRUE;
-            } else {
-                this.validated = Boolean.FALSE;
-                context.addMessage(this.informedCode, new FacesMessage(FacesMessage.SEVERITY_WARN, ResourceBundleHelper.getMessage("warnCode0003"), ""));
-            }
-        }
-    }
-
-    /**
-     * Validates the registration when the confirmation code is
-     * manually informed.
-     */
-    public String confirmUser() {
-        if(this.informedCode != null && !this.informedCode.isEmpty()) {
-            this.userAccount = userAccountBean.confirmUser(this.informedCode);
-            if(this.userAccount != null) {
-                this.validated = Boolean.TRUE;
-            } else {
-                this.validated = Boolean.FALSE;
-            }
-
-            if(!this.validated) {
-                context.addMessage(this.informedCode, new FacesMessage(FacesMessage.SEVERITY_WARN, ResourceBundleHelper.getMessage("warnCode0003"), ""));
-            }
-        }
-        return "registration_confirmation";
-    }
+    'registration_confirmation'
+  }
 }

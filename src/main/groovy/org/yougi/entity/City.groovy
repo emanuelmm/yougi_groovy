@@ -21,7 +21,6 @@
 package org.yougi.entity
 
 import javax.persistence.*
-import java.io.Serializable
 
 /**
  * City is the smallest geographic region where a JUG can operate. A JUG can
